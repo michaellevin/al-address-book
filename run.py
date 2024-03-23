@@ -1,1 +1,35 @@
-import address_app
+import address_app as app
+from pprint import pprint
+
+adb = app.AdbDatabase()
+pprint(adb.get_address_books())
+print(adb)
+adb2 = app.AdbDatabase()
+print(adb2)
+adb.clear_all()
+book = adb.create_address_book("Book1", exists_ok=True)
+
+book1 = adb.get_address_book("Book1")
+# book2 = adb.get_address_book("Book1")
+# print(book1, book2, book1 is book2)
+
+book1.add_record("John Doe", "123 Main St", "555-1234")
+book1.add_record("John Doe", "123 Main St", "555-1234")
+book1.add_record("   ", "123 Main St", "555-1234")
+book1.add_record("John Denver", "123 Main St", "556-1234")
+book1.add_record("Bill Cane", "1 Goodwin St", "+1 (903) 1556-124")
+book1.add_record("Bill Cane", "1 Goodwin St", "+1df (903) 1556-124")
+print(book1)
+# adb.create_address_book("Book2")
+print(book1.find_contact(name="John*"))
+print(book1.find_contact(address="123*"))
+print(book1.find_contact(phone_no="555*"))
+print(book1.find_contact(phone_no="555*4"))
+
+book1.display()
+book1.display("md")
+book1.display("xyz")
+book1.display("html")
+book1.display()
+book1.display("text")
+# # adb.deinit()
