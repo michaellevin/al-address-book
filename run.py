@@ -5,8 +5,11 @@ logger = app.get_logger()
 adb = app.AdbDatabase()
 pprint(adb.get_address_books())
 print(adb)
-adb2 = app.AdbDatabase()
+adb2 = app.AdbDatabase(r"C:\Cd\tests\al-address-book\address_app\tests")
 print(adb2)
+adb3 = app.AdbDatabase(r"address_app\tests")
+print(adb3)
+"""
 adb.clear()
 book = adb.create_address_book("Book1")
 
@@ -46,3 +49,4 @@ try:
 except app.exceptions.SerializationException as e:
     logger.error(e.message)
 # # adb.deinit()
+"""
