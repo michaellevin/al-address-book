@@ -7,6 +7,5 @@ from .base import get_logger, consts, exceptions
 
 
 from .database import AdbDatabase
-from .model import AddressBook
 from .view import ViewManager
 from .serialize import SerializationManager

@@ -7,7 +7,6 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   address_app.base._singleton
    address_app.base.consts
    address_app.base.exceptions
    address_app.base.hash_utils
