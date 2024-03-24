@@ -1,8 +1,9 @@
-from ..base.logger import logger
+from ..base import get_logger
 from ..model import AddressBook
 from ..base.exceptions import UnknownFormatterException
-
 from .formatter_registry import FormatterRegistry
+
+logger = get_logger()
 
 
 class ViewManager:

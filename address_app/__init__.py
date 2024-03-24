@@ -1,8 +1,8 @@
-__version__ = "0.2.2"
 __app_name__ = "address_app"
+__version__ = "0.2.3"
 
 # initialize logger
-from .base import logger, consts, exceptions
+from .base import get_logger, consts, exceptions
 
 __all__ = ["AdbDatabase", "__app_name__", "__version__"]
 

@@ -1,39 +1,44 @@
-from dataclasses import dataclass, field, asdict, fields
-
-try:
-    from ..base.hash_utils import hash_input
-except ImportError:
-    from address_app.base.hash_utils import hash_input
+from dataclasses import dataclass, field, fields
+from ..base.hash_utils import hash_input
 
 
 @dataclass
 class IContact:
-    """
-    A Contact dataclass, which includes name, address, and phone number.
+    """Represents a contact with a name, address, and phone number.
 
-    :ivar name: The name of the contact.
-    :ivar address: The contact's address.
-    :ivar phone_no: The contact's phone number.
-    :ivar _id: A unique identifier for the contact, generated based on
-               the contact's details. This field is not intended to be
-               directly accessed or serialized. The `_id` is computed
-               such that contacts with identical names, addresses, and
-               phone numbers (stripped from spaces) will have the same `_id`, ensuring uniqueness
-               across different contacts. Conversely, contacts with any
-               differing detail will generate different `_id` values.
+    Args:
+        name: The name of the contact.
+        address: The address of the contact.
+        phone_no: The phone number of the contact.
 
-               **Example**:
 
-               Given two contacts:
+    This class also includes a unique identifier (`id`) for each contact, which is generated
+    based on the name, address, and phone number (with all leading and trailing spaces removed)
+    to ensure that contacts with identical information will have the same `id`.
 
-               - Contact 1: John Doe, 123 Main St, 555-1234
-               - Contact 2: John Doe,  123 Main St , 555-1234
+    Example:
+        Creating and comparing contacts:
 
-               Both contacts will have the same `_id` since their details are identical.
+        >>> contact1 = IContact("John Doe", "123 Main St", "555-1234")
+        >>> contact2 = IContact("John Doe", "123 Main St ", "555-1234")
+        >>> contact3 = IContact("Jane Doe", "456 Park Ave", "555-5678")
 
-               - Contact 3: Jane Doe, 456 Park Ave, 555-5678
+        Since contact1 and contact2 have identical details (ignoring spaces),
+        they are considered equal:
 
-               Contact 3 will have a different `_id` due to differing details.
+        >>> contact1 == contact2
+        True
+
+        Contact3 has different details, so it is not equal to contact1 or contact2:
+
+        >>> contact1 == contact3
+        False
+        >>> contact2 == contact3
+        False
+
+    This comparison behavior allows for the effective management of contact uniqueness
+    within collections or databases, preventing duplicates based on the essential contact details.
+
     """
 
     name: str
@@ -42,56 +47,45 @@ class IContact:
     _id: int = field(init=False, repr=False, compare=False)
 
     def __post_init__(self):
-        """Generates a unique identifier for the contact upon initialization."""
+        """Generates a unique identifier for the contact based on its details."""
         self._id = hash_input(
             self.name.strip() + self.address.strip() + self.phone_no.strip()
         )
 
     @property
     def id(self) -> int:
-        """The unique identifier for the contact, read-only.
+        """Returns the unique identifier for the contact. Read-only.
 
-        :return: The contact's unique identifier.
-        :rtype: int
+        Returns:
+            int: The contact's unique identifier.
         """
         return self._id
 
     def to_dict(self) -> dict:
-        """Converts the contact's details into a dictionary, excluding the unique identifier.
+        """Converts the contact details to a dictionary format, excluding the unique identifier.
 
-        :return: The contact's details as a dictionary.
-        :rtype: dict
+        Returns:
+            dict: A dictionary of the contact's details.
         """
         return {f.name: getattr(self, f.name) for f in fields(self) if f.name != "_id"}
 
-    def __eq__(self, __o: object) -> bool:
-        """Checks if another object is an `IContact` with the same unique identifier.
+    def __eq__(self, other: object) -> bool:
+        """Determines if the contact is equal to another contact.
 
-        :param other: The object to compare.
-        :type other: object
-        :return: True if both objects are `IContact` instances with the same id, False otherwise.
-        :rtype: bool
+        Args:
+            other (object): The object to compare with.
+
+        Returns:
+            bool: True if the other object is an `IContact` with the same id, False otherwise.
         """
-        if not isinstance(__o, IContact):
+        if not isinstance(other, IContact):
             return False
-        return self.id == __o.id
+        return self.id == other.id
 
     def __repr__(self) -> str:
+        """Provides a human-readable representation of the contact.
+
+        Returns:
+            str: A string representation of the contact.
         """
-        Provides a human-readable representation of the contact.
-
-        :return: A string representation of the contact.
-        :rtype: str
-        """
-        return f"Person(name={self.name}, address={self.address}, phone_no={self.phone_no})"
-
-
-if __name__ == "__main__":
-    person = IContact("John Doe", "123 Main St", "555-1234")
-    print(person)
-    print(person.id)
-    person2 = IContact("John Doe", "123 Main St", "555-1234")
-    print(person2)
-    print(person2.id)
-    print(person == person2)
-    print(id(person), id(person2))
+        return f"IContact(name={self.name}, address={self.address}, phone_no={self.phone_no})"

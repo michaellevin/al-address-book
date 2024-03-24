@@ -1,8 +1,10 @@
-from ..base.logger import logger
+from ..base import get_logger
 
 from ..model import AddressBook
 from . import SerializeStrategyFactory
 from ..base.exceptions import SerializationException
+
+logger = get_logger()
 
 
 class SerializationManager:

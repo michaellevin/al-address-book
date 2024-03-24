@@ -1,6 +1,7 @@
 import address_app as app
 from pprint import pprint
 
+logger = app.get_logger()
 adb = app.AdbDatabase()
 pprint(adb.get_address_books())
 print(adb)
@@ -35,6 +36,7 @@ dm.set_formatter("text")
 dm.display()
 
 sm = app.SerializationManager(book1)
+
 try:
     sm.serialize("xrender/book1.json")
     sm.serialize("xrender/book1.xml")
@@ -42,5 +44,5 @@ try:
     sm.serialize("xrender/book1.csv")
     sm.serialize("xrender/book1.xyz")
 except app.exceptions.SerializationException as e:
-    app.logger.error(e.message)
+    logger.error(e.message)
 # # adb.deinit()

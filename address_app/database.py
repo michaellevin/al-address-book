@@ -2,11 +2,11 @@ import tempfile
 import typing
 from pathlib import Path
 
-from .base import logger, SingletonMeta
+from .base import get_logger, SingletonMeta
 from .model import AddressBook
-
-# from .exceptions import AddressBookExistsException
 from .storage import FileSystemStorage
+
+logger = get_logger()
 
 
 class AdbDatabase(metaclass=SingletonMeta):
