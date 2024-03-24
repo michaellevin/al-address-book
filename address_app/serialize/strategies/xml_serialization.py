@@ -1,4 +1,4 @@
-from ._strategy import SerializeStrategy
+from .base_serialization import SerializeStrategy
 
 
 class XMLStrategy(SerializeStrategy):
@@ -9,6 +9,9 @@ class XMLStrategy(SerializeStrategy):
     @classmethod
     def serialize(cls, data: dict, url: str):
         import xml.etree.ElementTree as ET
+        import os
+
+        os.makedirs(os.path.dirname(url), exist_ok=True)
 
         def _dict_to_xml(data: dict, parent: ET.Element):
             for key, value in data.items():

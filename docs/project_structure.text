@@ -1,0 +1,53 @@
+- .gitignore
+- address_app
+  - base
+    - consts.py
+    - exceptions.py
+    - hash_utils.py
+    - logger.py
+    - _singleton.py
+    - __init__.py
+  - database.py
+  - model
+    - address_book.py
+    - contact.py
+    - __init__.py
+  - serialize
+    - serialization_factory.py
+    - serialization_manager.py
+    - serialization_registry.py
+    - strategies
+      - base_serialization.py
+      - csv_serialization.py
+      - json_serialization.py
+      - xml_serialization.py
+      - yaml_serialization.py
+      - __init__.py
+    - __init__.py
+  - storage
+    - filesystem_storage.py
+    - storage_interface.py
+    - __init__.py
+  - view
+    - formatter_registry.py
+    - strategies
+      - base_formatter.py
+      - html_formatter.py
+      - markdown_formatter.py
+      - plain_text_formatter.py
+      - __init__.py
+    - view_manager.py
+    - __init__.py
+  - __init__.py
+- display
+  - display_manager.py
+- docs
+- project_structure.text
+- README.md
+- run.py
+- tests
+- xrender
+  - book1.html
+  - book1.json
+  - book1.xml
+  - book1.yaml

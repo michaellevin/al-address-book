@@ -1,5 +1,5 @@
-from ._strategy import SerializeStrategy
-from ..exceptions import NotImplementerSerializationException
+from .base_serialization import SerializeStrategy
+from ...base.exceptions import NotImplementerSerializationException
 
 
 class CSVStrategy(SerializeStrategy):

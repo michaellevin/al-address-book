@@ -1,14 +1,11 @@
-contacts:
-- _id: 4087469287
-  address: 123 Main St
-  name: John Doe
-  phone_no: 555-1234
-- _id: 111131532
-  address: 123 Main St
-  name: John Denver
-  phone_no: 556-1234
-- _id: 870344619
-  address: 1 Goodwin St
-  name: Bill Cane
-  phone_no: +1 (903) 1556-124
 name: Book1
+contacts:
+- name: John Doe
+  address: 123 Main St
+  phone_no: 555-1234
+- name: John Denver
+  address: 123 Main St
+  phone_no: 556-1234
+- name: Bill Cane
+  address: 1 Goodwin St
+  phone_no: +1 (903) 1556-124

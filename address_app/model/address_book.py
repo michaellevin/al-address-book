@@ -2,15 +2,15 @@ import re
 from fnmatch import fnmatch
 from typing import Optional, List
 
-from .logger import logger
-from .contact import IContact
-from .exceptions import (
+from ..base import logger
+from ..base.consts import VALIDATE_PHONE_NO_REGEX
+from ..base.exceptions import (
     AddressAppException,
     InvalidContactAddressException,
     InvalidContactNameException,
     InvalidContactPhoneNumberException,
 )
-from .consts import VALIDATE_PHONE_NO_REGEX
+from .contact import IContact
 
 
 class AddressBook:
@@ -63,18 +63,12 @@ class AddressBook:
     def clear(self):
         self._contacts = {}
 
-    def remove_record(self, contact_id: int) -> Optional[IContact]:
-        # if contact := self._contacts.pop(contact_id, None):
-        #     logger.info(f"Removed contact {contact.name} with id {contact_id}")
-        #     return contact
-        # logger.warning(f"Contact with id {contact_id} not found")
-        # return None
-        ...
+    def remove_record(self, contact_id: int) -> Optional[IContact]: ...
 
     def to_dict(self):
         return {
             "name": self.name,
-            "contacts": [contact.__dict__ for contact in self._contacts.values()],
+            "contacts": [contact.to_dict() for contact in self._contacts.values()],
         }
 
     def __getitem__(self, contact_id: int) -> Optional[IContact]:

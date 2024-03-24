@@ -1,5 +1,5 @@
 from .serialization_registry import SerializeStrategyRegistry
-from ._strategy import SerializeStrategy
+from .strategies.base_serialization import SerializeStrategy
 
 
 class SerializeStrategyFactory:

@@ -1,7 +1,9 @@
-from .json_strategy import JSONStrategy
-from .xml_strategy import XMLStrategy
-from .yaml_strategy import YAMLStrategy
-from .csv_strategy import CSVStrategy
+from .strategies.json_serialization import JSONStrategy
+from .strategies.xml_serialization import XMLStrategy
+from .strategies.yaml_serialization import YAMLStrategy
+from .strategies.csv_serialization import CSVStrategy
+
+from ..base.exceptions import NoAvailableSerializationException
 
 
 class SerializeStrategyRegistry:
@@ -22,7 +24,7 @@ class SerializeStrategyRegistry:
     def get_strategy_for_extension(cls, ext: str):
         strategy = cls._strategies.get(ext)
         if not strategy:
-            raise ValueError(f"No strategy found for extension: {ext}")
+            raise NoAvailableSerializationException(ext.capitalize())
         return strategy
 
 

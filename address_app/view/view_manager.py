@@ -1,10 +1,11 @@
-from .logger import logger
-from .address_book import AddressBook
-from .formatter import FormatterRegistry
-from .exceptions import UnknownFormatterException
+from ..base.logger import logger
+from ..model import AddressBook
+from ..base.exceptions import UnknownFormatterException
+
+from .formatter_registry import FormatterRegistry
 
 
-class DisplayManager:
+class ViewManager:
     def __init__(self, address_book: AddressBook):
         self.address_book = address_book
         self.formatter = FormatterRegistry.get_formatter("text")

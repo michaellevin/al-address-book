@@ -1,15 +1,9 @@
 import tempfile
 import typing
-import logging
 from pathlib import Path
 
-
-from address_app import __app_name__
-
-logger = logging.getLogger(__app_name__)
-
-from ._singleton import SingletonMeta
-from .address_book import AddressBook
+from .base import logger, SingletonMeta
+from .model import AddressBook
 
 # from .exceptions import AddressBookExistsException
 from .storage import FileSystemStorage

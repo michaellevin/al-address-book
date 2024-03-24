@@ -1,0 +1,20 @@
+{
+    "name": "Book1",
+    "contacts": [
+        {
+            "name": "John Doe",
+            "address": "123 Main St",
+            "phone_no": "555-1234"
+        },
+        {
+            "name": "John Denver",
+            "address": "123 Main St",
+            "phone_no": "556-1234"
+        },
+        {
+            "name": "Bill Cane",
+            "address": "1 Goodwin St",
+            "phone_no": "+1 (903) 1556-124"
+        }
+    ]
+}

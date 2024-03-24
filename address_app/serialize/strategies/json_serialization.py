@@ -1,4 +1,4 @@
-from ._strategy import SerializeStrategy
+from .base_serialization import SerializeStrategy
 
 
 class JSONStrategy(SerializeStrategy):
@@ -9,6 +9,8 @@ class JSONStrategy(SerializeStrategy):
     @classmethod
     def serialize(cls, data: dict, url: str):
         import json
+        import os
 
+        os.makedirs(os.path.dirname(url), exist_ok=True)
         with open(url, "w") as file:
             json.dump(data, file)

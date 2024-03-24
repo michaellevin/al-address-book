@@ -1,8 +1,8 @@
-from .logger import logger
+from ..base.logger import logger
 
-from .address_book import AddressBook
-from .serialize import SerializeStrategyFactory
-from .exceptions import SerializationException
+from ..model import AddressBook
+from . import SerializeStrategyFactory
+from ..base.exceptions import SerializationException
 
 
 class SerializationManager:
