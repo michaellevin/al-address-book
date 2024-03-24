@@ -79,3 +79,23 @@ class UnknownFormatterException(AddressAppException):
     def __init__(self, name: str):
         message = f"Formatter {name} not found"
         super().__init__(message)
+
+
+# Serialization
+class SerializationException(AddressAppException):
+    title = "Serialization Exception"
+
+    def __init__(self, message: str):
+        super().__init__(message)
+
+
+class NoAvailableSerializationException(SerializationException):
+    def __init__(self, name: str):
+        message = f"{name} serialization not found"
+        super().__init__(message)
+
+
+class NotImplementerSerializationException(SerializationException):
+    def __init__(self, name: str):
+        message = f"{name} serialization not implemented yet"
+        super().__init__(message)

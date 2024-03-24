@@ -1,40 +1,26 @@
 import re
-import logging
 from fnmatch import fnmatch
 from typing import Optional, List
 
-from address_app import __app_name__
-from ._singleton import SingletonArgMeta
+from .logger import logger
 from .contact import IContact
 from .exceptions import (
     AddressAppException,
     InvalidContactAddressException,
     InvalidContactNameException,
     InvalidContactPhoneNumberException,
-    UnknownFormatterException,
 )
 from .consts import VALIDATE_PHONE_NO_REGEX
-from .formatter import FormatterRegistry
-
-logger = logging.getLogger(__app_name__)
 
 
-# class AddressBook(metaclass=SingletonArgMeta):
 class AddressBook:
     def __init__(self, name="Default"):
         self._name = name
-        self._formatter = FormatterRegistry.get_formatter("text")
         self._contacts = {}
 
     @property
     def name(self):
         return self._name
-
-    def set_formatter(self, name: str):
-        try:
-            self._formatter = FormatterRegistry.get_formatter(name)
-        except UnknownFormatterException as e:
-            logger.error(e.message)
 
     def get_contact_by_id(self, contact_id: int) -> Optional[IContact]:
         return self._contacts.get(contact_id)
@@ -77,12 +63,22 @@ class AddressBook:
     def clear(self):
         self._contacts = {}
 
-    def display(self, formatter_name: Optional[str] = None) -> str:
-        if formatter_name:
-            self.set_formatter(formatter_name)
-        output = self._formatter.format(self)
-        print(output)
-        return output
+    def remove_record(self, contact_id: int) -> Optional[IContact]:
+        # if contact := self._contacts.pop(contact_id, None):
+        #     logger.info(f"Removed contact {contact.name} with id {contact_id}")
+        #     return contact
+        # logger.warning(f"Contact with id {contact_id} not found")
+        # return None
+        ...
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "contacts": [contact.__dict__ for contact in self._contacts.values()],
+        }
+
+    def __getitem__(self, contact_id: int) -> Optional[IContact]:
+        return self.get_contact_by_id(contact_id)
 
     def __len__(self):
         return len(self._contacts)

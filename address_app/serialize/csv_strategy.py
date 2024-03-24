@@ -1,6 +1,12 @@
 from ._strategy import SerializeStrategy
+from ..exceptions import NotImplementerSerializationException
 
 
 class CSVStrategy(SerializeStrategy):
-    def serialize(self, data: dict):
-        raise NotImplementedError("Not implemented yet")
+    @classmethod
+    def get_supported_extensions(cls) -> str:
+        return ("csv",)
+
+    @classmethod
+    def serialize(cls, data: dict, url: str):
+        raise NotImplementerSerializationException("CSV")

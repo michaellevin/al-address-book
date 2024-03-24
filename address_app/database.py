@@ -1,50 +1,36 @@
 import tempfile
-import pickle
 import typing
 import logging
 from pathlib import Path
-from threading import Lock
+
 
 from address_app import __app_name__
 
 logger = logging.getLogger(__app_name__)
-# print(__name__)
 
 from ._singleton import SingletonMeta
 from .address_book import AddressBook
-from .exceptions import AddressBookExistsException
+
+# from .exceptions import AddressBookExistsException
+from .storage import FileSystemStorage
 
 
 class AdbDatabase(metaclass=SingletonMeta):
     def __init__(self):
-        self._lock = Lock()
+
         self.init()
 
     def init(self) -> None:
-        """Create a db.adb file in Temp where all address books will be stored."""
         logger.info("Initializing database")
+        storage_path = Path(tempfile.gettempdir()) / "adb" / "adb.pickle"
+        self.storage = FileSystemStorage(storage_path)
+        self.read()
 
-        self._db_folder = Path(tempfile.gettempdir()) / "adb"
-        self._db_file = self._db_folder / "db.adb"
-        self._db_folder.mkdir(parents=True, exist_ok=True)
-        if not self._db_file.exists():
-            self._address_books = {}
-            self.save()
-        else:
-            self.read()
-
-    @property
-    def db_file(self):
-        return self._db_file
-
-    def create_address_book(self, name: str, exists_ok: bool = True) -> AddressBook:
+    def create_address_book(self, name: str) -> AddressBook:
         book = self.get_address_book(name)
         if book is not None:
-            if exists_ok:
-                logger.error(f"Address book {name} already exists")
-                return book
-            else:
-                raise AddressBookExistsException(name)
+            logger.warning(f"Address Book {name} already exists")
+            return book
 
         logger.info(f"Creating address book {name}")
         self._address_books[name] = AddressBook(name)
@@ -77,35 +63,19 @@ class AdbDatabase(metaclass=SingletonMeta):
         self.save()
 
     def save(self) -> bool:
-        logger.info("Saving database")
-        with self._lock:
-            with open(self._db_file, "wb") as f:
-                pickle.dump(self._address_books, f)
+        self.storage.save(self._address_books)
         return True
 
     def read(self) -> bool:
-        logger.info("Reading database")
-        with open(self._db_file, "rb") as f:
-            self._address_books = pickle.load(f)
+        self._address_books = self.storage.read() or {}
         return True
 
-    def enrich(self):
-        logger.info("Enriching database")
-        ...
+    def enrich(self): ...
 
     def deinit(self) -> None:
         logger.info("Deinitializing database")
-        with self._lock:
-            # Delete the database file if it exists
-            if self._db_file.exists():
-                self._db_file.unlink()
-                logger.info(f"Deleted database file at {self._db_file}")
+        self.storage.delete()
 
-            # Remove the database folder if it's empty
-            if not any(self._db_folder.iterdir()):
-                self._db_folder.rmdir()
-                logger.info(f"Removed empty database folder at {self._db_folder}")
-
-            # Clear in-memory data
-            self._address_books = {}
-            logger.info("Cleared in-memory address book data.")
+        # Clear in-memory data
+        self._address_books = {}
+        logger.info("Cleared in-memory address book data.")
