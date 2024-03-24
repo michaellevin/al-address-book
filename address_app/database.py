@@ -45,13 +45,19 @@ class AdbDatabase(metaclass=SingletonMeta):
         logger.info("Getting address books")
         return self._address_books
 
-    def clear(self, book_name: str) -> None:
+    def clear_book(self, book_name: str) -> None:
         logger.info(f"Clearing address book {book_name}")
         if book_name in self._address_books:
             self._address_books[book_name].clear()
             self.save()
 
-    def clear_all(self) -> None:
+    def remove_book(self, book_name: str) -> None:
+        logger.info(f"Removing address book {book_name}")
+        if book_name in self._address_books:
+            del self._address_books[book_name]
+            self.save()
+
+    def clear(self) -> None:
         logger.info("Clearing all databases")
         self._address_books = {}
         self.save()
