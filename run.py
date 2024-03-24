@@ -7,7 +7,7 @@ pprint(adb.get_address_books())
 print(adb)
 adb2 = app.AdbDatabase()
 print(adb2)
-adb.clear_all()
+adb.clear()
 book = adb.create_address_book("Book1")
 
 book1 = adb.get_address_book("Book1")
