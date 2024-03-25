@@ -48,9 +48,7 @@ class IContact:
 
     def __post_init__(self):
         """Generates a unique identifier for the contact based on its details."""
-        self._id = hash_input(
-            self.name.strip() + self.address.strip() + self.phone_no.strip()
-        )
+        self._id = hash_input(self.name.strip() + self.address.strip())
 
     @property
     def id(self) -> int:
