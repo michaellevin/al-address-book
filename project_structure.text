@@ -5,8 +5,9 @@
     - exceptions.py
     - hash_utils.py
     - logger.py
-    - _singleton.py
     - __init__.py
+  - cli
+    - cli.py
   - database.py
   - model
     - address_book.py
@@ -39,13 +40,20 @@
     - view_manager.py
     - __init__.py
   - __init__.py
-- display
-  - display_manager.py
-- docs
+- generate_docs.bat
+- generate_docs.sh
 - project_structure.text
 - README.md
+- requirements.txt
 - run.py
 - tests
+  - adb
+    - adb.pickle
+  - test_adb_base.py
+  - test_adb_books.py
+  - test_address_book.py
+  - test_view.py
+  - __init__.py
 - xrender
   - book1.html
   - book1.json
