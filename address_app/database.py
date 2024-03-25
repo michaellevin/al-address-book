@@ -23,12 +23,15 @@ class _SingletonRootMeta(type):
     _default_key = "default"
 
     def __call__(cls, *args, **kwargs):
-        if args:
-            key = str(Path(args[0]).resolve(strict=False))
-        elif "root" in kwargs and kwargs["root"] is not None:
-            key = str(Path(kwargs["root"]).resolve(strict=False))
-        else:
-            key = cls._default_key
+        key = cls._default_key
+        try:
+            if args:
+                root_arg = args[0]
+                key = str(Path(root_arg).resolve(strict=False))
+            elif "root" in kwargs and (root_arg := kwargs["root"]) is not None:
+                key = str(Path(root_arg).resolve(strict=False))
+        except Exception as e:
+            logger.error(f"Invalid root path provided: {root_arg}. Using default.")
 
         if key not in cls._instances:
             cls._instances[key] = super().__call__(*args, **kwargs)
@@ -56,14 +59,14 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
     def __init__(self, root: Optional[str] = None):
         self.init(root)
 
-    def init(self, root: Path) -> None:
+    def init(self, root: Optional[Path] = None) -> None:
         """
         Sets up the database storage and reads the existing data from storage.
 
         Args:
             root (Path): The root path for the database storage.
         """
-        logger.info("Initializing database")
+        logger.debug("Initializing database")
         self.storage = FileSystemStorage(root)
         self._read()
 
@@ -103,7 +106,7 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
             logger.warning(f"Address Book {name} already exists")
             return book
 
-        logger.info(f"Creating address book {name}")
+        logger.debug(f"Creating address book {name}")
         self._address_books[name] = AddressBook(name)
         self._save()
         return self._address_books[name]
@@ -134,7 +137,7 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
             name (str): The name of the address book to delete.
         """
         if name in self._address_books:
-            logger.info(f"Deleting address book {name}")
+            logger.debug(f"Deleting address book {name}")
             del self._address_books[name]
             self._save()
         else:
@@ -147,7 +150,7 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
         Args:
             book_name (str): The name of the address book to clear.
         """
-        logger.info(f"Clearing address book {book_name}: Remove all contacts")
+        logger.debug(f"Clearing address book {book_name}: Remove all contacts")
         if book_name in self._address_books:
             self._address_books[book_name].clear()
             self._save()
@@ -159,14 +162,14 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
         Returns:
             Dict[str, AddressBook]: A dictionary of all address books, keyed by their name.
         """
-        logger.info("Getting address books")
+        logger.debug("Getting address books")
         return self._address_books
 
     def clear(self) -> None:
         """
         Clears all data from the database, removing all address books.
         """
-        logger.info("Clearing Database: Remove all the address books")
+        logger.debug("Clearing Database: Remove all the address books")
         self._address_books = {}
         self._save()
 
@@ -200,8 +203,8 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
 
         # TODO check deinitialization logic
 
-        logger.info("Deinitializing database")
+        logger.debug("Deinitializing database")
         self.clear()
         self.storage.delete()
         self.storage = None
-        logger.info("Cleared in-memory address book data.")
+        logger.debug("Cleared in-memory address book data.")

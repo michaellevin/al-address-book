@@ -9,7 +9,7 @@ from ..base.consts import RELATIVE_STORAGE_PATH
 
 
 class FileSystemStorage(StorageInterface):
-    def __init__(self, root: Optional[str] = None):
+    def __init__(self, root: Optional[Path] = None):
         if root is None:
             root = tempfile.gettempdir()
         self.root = Path(root)
