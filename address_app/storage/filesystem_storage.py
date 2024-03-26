@@ -5,13 +5,13 @@ from pathlib import Path
 from threading import Lock
 
 from .storage_interface import IStorage
-from ..base.consts import RELATIVE_STORAGE_PATH
+from ..base.consts import DEFAULT_ROOT_PATH, RELATIVE_STORAGE_PATH
 
 
 class FileSystemStorage(IStorage):
     def __init__(self, root: Optional[Path] = None):
         if root is None:
-            root = tempfile.gettempdir()
+            root = DEFAULT_ROOT_PATH
         self.root = Path(root)
         self.storage_filepath = self.root / RELATIVE_STORAGE_PATH
         self.storage_filepath.parent.mkdir(parents=True, exist_ok=True)
@@ -28,20 +28,20 @@ class FileSystemStorage(IStorage):
 
     def read(self) -> Dict:
         if not self.storage_filepath.exists():
+            self.save({})
             return {}
         with open(self.storage_filepath, "rb") as file:
             return pickle.load(file)
 
     def delete(self):
         try:
+            self.storage_filepath.unlink()
             self.storage_filepath.parent.rmdir()
-            # self.storage_filepath.unlink()
             # if not any(self.root.iterdir()):
             #     self.root.rmdir()
 
         except FileNotFoundError:
             # TODO fix print statement -> exception
-
             print(f"File {self.storage_filepath} not found for deletion")
             # raise
 
