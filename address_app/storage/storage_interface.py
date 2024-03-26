@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class StorageInterface(ABC):
+class IStorage(ABC):
     @abstractmethod
     def save(self, data: dict):
         pass

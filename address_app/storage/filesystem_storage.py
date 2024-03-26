@@ -4,11 +4,11 @@ from typing import Optional
 from pathlib import Path
 from threading import Lock
 
-from .storage_interface import StorageInterface
+from .storage_interface import IStorage
 from ..base.consts import RELATIVE_STORAGE_PATH
 
 
-class FileSystemStorage(StorageInterface):
+class FileSystemStorage(IStorage):
     def __init__(self, root: Optional[Path] = None):
         if root is None:
             root = tempfile.gettempdir()
