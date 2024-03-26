@@ -1,3 +1,5 @@
+from typing import List
+
 from .strategies.json_serialization import JSONStrategy
 from .strategies.xml_serialization import XMLStrategy
 from .strategies.yaml_serialization import YAMLStrategy
@@ -17,7 +19,7 @@ class SerializeStrategyRegistry:
             cls._strategies[ext] = strategy
 
     @classmethod
-    def get_supported_extensions(cls) -> list[str]:
+    def get_supported_extensions(cls) -> List[str]:
         return list(cls._strategies.keys())
 
     @classmethod

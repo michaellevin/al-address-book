@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field, fields
+from typing import Dict
 from ..base.hash_utils import hash_input
 
 
@@ -59,7 +60,7 @@ class Contact:
         """
         return self._id
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> Dict:
         """Converts the contact details to a dictionary format, excluding the unique identifier.
 
         Returns:

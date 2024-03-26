@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Tuple
 
 
 class ISerializeStrategy(ABC):
@@ -9,7 +10,7 @@ class ISerializeStrategy(ABC):
 
     @classmethod
     @abstractmethod
-    def get_supported_extensions(cls) -> tuple[str]:
+    def get_supported_extensions(cls) -> Tuple[str]:
         pass
 
     @classmethod

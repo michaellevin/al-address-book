@@ -1,9 +1,12 @@
+from typing import Tuple
+
+
 from .base_serialization import ISerializeStrategy
 
 
 class JSONStrategy(ISerializeStrategy):
     @classmethod
-    def get_supported_extensions(cls) -> tuple[str]:
+    def get_supported_extensions(cls) -> Tuple[str]:
         return ("json",)
 
     @classmethod

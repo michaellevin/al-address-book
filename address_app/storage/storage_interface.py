@@ -1,3 +1,5 @@
+from typing import Dict
+
 from abc import ABC, abstractmethod
 
 
@@ -7,7 +9,7 @@ class IStorage(ABC):
         pass
 
     @abstractmethod
-    def read(self) -> dict:
+    def read(self) -> Dict:
         pass
 
     @abstractmethod

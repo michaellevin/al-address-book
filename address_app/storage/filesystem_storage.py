@@ -1,6 +1,6 @@
 import pickle
 import tempfile
-from typing import Optional
+from typing import Optional, Dict
 from pathlib import Path
 from threading import Lock
 
@@ -26,7 +26,7 @@ class FileSystemStorage(IStorage):
         with open(self.storage_filepath, "wb") as file:
             pickle.dump(data, file)
 
-    def read(self) -> dict:
+    def read(self) -> Dict:
         if not self.storage_filepath.exists():
             return {}
         with open(self.storage_filepath, "rb") as file:
