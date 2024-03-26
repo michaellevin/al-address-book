@@ -1,6 +1,7 @@
 import argparse
-import sys
+import os
 from address_app.database import AdbDatabase
+from address_app.base.consts import DEFAULT_STORAGE_FULL_PATH
 
 # Initialize the AdbDatabase instance
 adb = None
@@ -8,16 +9,25 @@ adb = None
 
 def init_database(path=None):
     global adb
-    adb = AdbDatabase(path) if path else AdbDatabase()
+    adb = AdbDatabase()
 
     print(f"Address Book Database initialized at {adb.storage_filepath}")
 
 
 def check_status():
-    if adb is not None:
-        print(f"Adb initialized at {adb.root_path}")
+    if os.path.exists(DEFAULT_STORAGE_FULL_PATH):
+        print("Address Book Database is initialized.")
     else:
-        print("Adb is not initialized. Use 'adb init' to start.")
+        print("Address Book Database is not initialized.")
+
+
+def deinit_database():
+    if os.path.exists(DEFAULT_STORAGE_FULL_PATH):
+        adb = AdbDatabase()
+        adb.deinit()
+        print("Address Book Database de-initialized.")
+    else:
+        print("Address Book Database is not initialized, nothing to de-initialize.")
 
 
 def list_books():
@@ -57,16 +67,25 @@ def main():
     parser.add_argument(
         "command",
         help="Command to run",
-        choices=["init", "status", "list", "create-book", "add-contact"],
+        choices=[
+            "init",
+            "status",
+            "deinit",
+            "list",
+            "create-book",
+            "add-contact",
+            "help",
+        ],
     )
     parser.add_argument("arguments", nargs="*", help="Arguments for the command")
     args = parser.parse_args()
 
     if args.command == "init":
-        path = args.arguments[0] if args.arguments else None
-        init_database(path)
+        init_database()
     elif args.command == "status":
         check_status()
+    elif args.command == "deinit":
+        deinit_database()
     elif args.command == "list":
         list_books()
     elif args.command == "create-book":
