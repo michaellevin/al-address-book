@@ -3,12 +3,6 @@ from pprint import pprint
 
 logger = app.get_logger()
 adb = app.AdbDatabase()
-pprint(adb.get_address_books())
-print(adb)
-adb2 = app.AdbDatabase(r"C:\Cd\tests\al-address-book\address_app\tests")
-print(adb2)
-adb3 = app.AdbDatabase(r"address_app\tests")
-print(adb3)
 """
 adb.clear()
 book = adb.create_address_book("Book1")
@@ -41,11 +35,11 @@ dm.display()
 sm = app.SerializationManager(book1)
 
 try:
-    sm.serialize("xrender/book1.json")
-    sm.serialize("xrender/book1.xml")
-    sm.serialize("xrender/book1.yaml")
-    sm.serialize("xrender/book1.csv")
-    sm.serialize("xrender/book1.xyz")
+    sm.serialize(".build/book1.json")
+    sm.serialize(".build/book1.xml")
+    sm.serialize(".build/book1.yaml")
+    sm.serialize(".build/book1.csv")
+    sm.serialize(".build/book1.xyz")
 except app.exceptions.SerializationException as e:
     logger.error(e.message)
 # # adb.deinit()

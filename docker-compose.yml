@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/python39/Dockerfile
+    ports:
+      - "4000:4000" 
+    volumes:
+      - .:/usr/src/address_app

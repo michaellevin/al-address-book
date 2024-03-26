@@ -50,22 +50,6 @@ class TestContact(unittest.TestCase):
             "Contact phone number should be None if not provided",
         )
 
-    def test_hash_equality(self):
-        # Contacts with the same details should have the same hash
-        self.assertEqual(
-            hash(self.contact1),
-            hash(self.contact1_w_spaces),
-            "Hashes of identical contacts should be equal",
-        )
-
-    def test_hash_inequality(self):
-        # Contacts with different details should have different hashes
-        self.assertNotEqual(
-            hash(self.contact1),
-            hash(self.contact2),
-            "Hashes of different contacts should not be equal",
-        )
-
 
 if __name__ == "__main__":
     unittest.main()

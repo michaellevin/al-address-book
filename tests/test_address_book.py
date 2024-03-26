@@ -1,5 +1,51 @@
 import unittest
-from address_app.model import AddressBook
+from address_app.model import (
+    AddressBook,
+    validate_name,
+    validate_address,
+    validate_phone_no,
+)
+from address_app.base.exceptions import InvalidContactDataException
+
+
+class TestValidation(unittest.TestCase):
+
+    def test_valid_name(self):
+        self.assertIsNone(
+            validate_name("John Doe")
+        )  # Assuming validate_name returns None for valid inputs
+
+        # Test invalid names
+        with self.assertRaises(InvalidContactDataException):
+            validate_name("")  # Empty string
+
+        with self.assertRaises(InvalidContactDataException):
+            validate_name("   ")  # Spaces only
+
+        with self.assertRaises(InvalidContactDataException):
+            validate_name("123")  # Numeric string
+
+    def test_valid_address(self):
+        self.assertIsNone(validate_address("123 Main St"))
+
+        # Test invalid addresses
+        with self.assertRaises(InvalidContactDataException):
+            validate_address("")  # Empty string
+
+        with self.assertRaises(InvalidContactDataException):
+            validate_address("   ")  # Spaces only
+
+    def test_valid_phone_no(self):
+        self.assertIsNone(validate_phone_no("555-1234"), "Phone number should be valid")
+        self.assertIsNone(
+            validate_phone_no("+1 (903) 972-35-59"), "Phone number should be valid"
+        )
+        self.assertIsNone(
+            validate_phone_no(None), "Phone number should be valid or empty"
+        )
+        # Test invalid phone numbers
+        with self.assertRaises(InvalidContactDataException):
+            validate_phone_no("abc")  # Non-numeric
 
 
 class TestAddressBook(unittest.TestCase):

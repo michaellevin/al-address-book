@@ -6,8 +6,7 @@
     - hash_utils.py
     - logger.py
     - __init__.py
-  - cli
-    - cli.py
+  - cli.py
   - database.py
   - model
     - address_book.py
@@ -29,6 +28,8 @@
     - filesystem_storage.py
     - storage_interface.py
     - __init__.py
+  - tests
+    - adb
   - view
     - formatter_registry.py
     - strategies
@@ -40,6 +41,11 @@
     - view_manager.py
     - __init__.py
   - __init__.py
+- docker
+  - python37
+    - Dockerfile
+  - python39
+    - Dockerfile
 - generate_docs.bat
 - generate_docs.sh
 - project_structure.text
@@ -52,10 +58,6 @@
   - test_adb_base.py
   - test_adb_books.py
   - test_address_book.py
+  - test_contact.py
   - test_view.py
   - __init__.py
-- xrender
-  - book1.html
-  - book1.json
-  - book1.xml
-  - book1.yaml
