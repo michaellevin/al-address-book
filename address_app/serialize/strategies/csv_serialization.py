@@ -1,8 +1,8 @@
-from .base_serialization import SerializeStrategy
+from .base_serialization import ISerializeStrategy
 from ...base.exceptions import NotImplementerSerializationException
 
 
-class CSVStrategy(SerializeStrategy):
+class CSVStrategy(ISerializeStrategy):
     @classmethod
     def get_supported_extensions(cls) -> str:
         return ("csv",)

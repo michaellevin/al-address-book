@@ -1,10 +1,10 @@
 from .serialization_registry import SerializeStrategyRegistry
-from .strategies.base_serialization import SerializeStrategy
+from .strategies.base_serialization import ISerializeStrategy
 
 
 class SerializeStrategyFactory:
     @staticmethod
-    def get_strategy(url: str) -> SerializeStrategy:
+    def get_strategy(url: str) -> ISerializeStrategy:
         """Get the appropriate serialization strategy for the given URL."""
         # Extract the file extension from the URL
         extension = url.rsplit(".", 1)[-1].lower()

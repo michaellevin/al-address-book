@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class SerializeStrategy(ABC):
+class ISerializeStrategy(ABC):
     @classmethod
     @abstractmethod
     def serialize(cls, data: dict, url: str):

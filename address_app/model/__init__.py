@@ -1,2 +1,2 @@
 from .address_book import AddressBook
-from .contact import IContact
+from .contact import Contact

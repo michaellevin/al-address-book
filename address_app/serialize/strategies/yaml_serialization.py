@@ -1,7 +1,7 @@
-from .base_serialization import SerializeStrategy
+from .base_serialization import ISerializeStrategy
 
 
-class YAMLStrategy(SerializeStrategy):
+class YAMLStrategy(ISerializeStrategy):
     @classmethod
     def get_supported_extensions(cls) -> str:
         return ("yml", "yaml")

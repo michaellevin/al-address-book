@@ -3,7 +3,7 @@ from ..base.hash_utils import hash_input
 
 
 @dataclass
-class IContact:
+class Contact:
     """Represents a contact with a name, address, and phone number.
 
     Args:
@@ -19,9 +19,9 @@ class IContact:
     Example:
         Creating and comparing contacts:
 
-        >>> contact1 = IContact("John Doe", "123 Main St", "555-1234")
-        >>> contact2 = IContact("John Doe", "123 Main St ", "555-1234")
-        >>> contact3 = IContact("Jane Doe", "456 Park Ave", "555-5678")
+        >>> contact1 = Contact("John Doe", "123 Main St", "555-1234")
+        >>> contact2 = Contact("John Doe", "123 Main St ", "555-1234")
+        >>> contact3 = Contact("Jane Doe", "456 Park Ave", "555-5678")
 
         Since contact1 and contact2 have identical details (ignoring spaces),
         they are considered equal:
@@ -43,7 +43,7 @@ class IContact:
 
     name: str
     address: str
-    phone_no: str
+    phone_no: str = None
     _id: int = field(init=False, repr=False, compare=False)
 
     def __post_init__(self):
@@ -74,11 +74,11 @@ class IContact:
             other (object): The object to compare with.
 
         Returns:
-            bool: True if the other object is an `IContact` with the same id, False otherwise.
+            bool: True if the other object is an `Contact` with the same id, False otherwise.
         """
-        if not isinstance(other, IContact):
+        if not isinstance(other, Contact):
             return False
-        return self.id == other.id
+        return self._id == other._id
 
     def __repr__(self) -> str:
         """Provides a human-readable representation of the contact.
@@ -86,4 +86,13 @@ class IContact:
         Returns:
             str: A string representation of the contact.
         """
-        return f"IContact(name={self.name}, address={self.address}, phone_no={self.phone_no})"
+        return f"Contact(name={self.name}, address={self.address}, phone_no={self.phone_no})"
+
+    def __hash__(self) -> int:
+        """Returns the hash value of the contact based on its unique identifier.
+
+        Returns:
+            int: The hash value of the contact based on its name and address.
+
+        """
+        return self._id

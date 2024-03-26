@@ -1,7 +1,7 @@
-from .base_serialization import SerializeStrategy
+from .base_serialization import ISerializeStrategy
 
 
-class XMLStrategy(SerializeStrategy):
+class XMLStrategy(ISerializeStrategy):
     @classmethod
     def get_supported_extensions(cls) -> str:
         return ("xml",)

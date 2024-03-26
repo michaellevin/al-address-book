@@ -1,7 +1,7 @@
-from .base_serialization import SerializeStrategy
+from .base_serialization import ISerializeStrategy
 
 
-class JSONStrategy(SerializeStrategy):
+class JSONStrategy(ISerializeStrategy):
     @classmethod
     def get_supported_extensions(cls) -> tuple[str]:
         return ("json",)

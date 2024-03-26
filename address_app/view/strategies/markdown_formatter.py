@@ -1,7 +1,7 @@
-from .base_formatter import FormatterStrategy
+from .base_formatter import IBaseFormatter
 
 
-class MarkdownFormatter(FormatterStrategy):
+class MarkdownFormatter(IBaseFormatter):
     def format(self, address_book) -> str:
         lines = [f"# Address Book: {address_book.name}", "## Contacts"]
         for contact in address_book:

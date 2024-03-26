@@ -1,7 +1,7 @@
-from .base_formatter import FormatterStrategy
+from .base_formatter import IBaseFormatter
 
 
-class PlainTextFormatter(FormatterStrategy):
+class PlainTextFormatter(IBaseFormatter):
     def format(self, address_book) -> str:
         lines = [f"Address Book: {address_book.name}"]
         for i, contact in enumerate(address_book):
