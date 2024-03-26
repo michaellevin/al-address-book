@@ -87,12 +87,3 @@ class Contact:
             str: A string representation of the contact.
         """
         return f"Contact(name={self.name}, address={self.address}, phone_no={self.phone_no})"
-
-    def __hash__(self) -> int:
-        """Returns the hash value of the contact based on its unique identifier.
-
-        Returns:
-            int: The hash value of the contact based on its name and address.
-
-        """
-        return self._id
