@@ -23,6 +23,21 @@ from .contact import Contact
 logger = get_logger()
 
 
+def validate_name(name: str):
+    if not isinstance(name, str) or not name.strip() or name.isdigit():
+        raise InvalidContactNameException(name)
+
+
+def validate_address(address: str):
+    if not isinstance(address, str) or not address.strip():
+        raise InvalidContactAddressException(address)
+
+
+def validate_phone_no(phone_no: Optional[str]):
+    if phone_no is not None and not re.match(VALIDATE_PHONE_NO_REGEX, phone_no):
+        raise InvalidContactPhoneNumberException(phone_no)
+
+
 class AddressBook:
     """Represents a simple address book to manage contacts.
 
@@ -89,26 +104,23 @@ class AddressBook:
         Args:
             name (str): The name of the contact.
             address (str): The contact's address.
-            phone_no (str, optional): The contact's phone number. Defaults to None.
+            phone_no (str, optional): The contact's phone number.
 
         Returns:
             Optional[Contact]: The added contact object, or None if the addition fails.
         """
         try:
-            if not isinstance(name, str) or not name.strip() or name.isdigit():
-                raise InvalidContactNameException(name)
-            if not isinstance(address, str) or not address.strip():
-                raise InvalidContactAddressException(address)
-            if phone_no is not None:
-                # Validate phone number format
-                if not re.match(VALIDATE_PHONE_NO_REGEX, phone_no):
-                    raise InvalidContactPhoneNumberException(phone_no)
-        except AddressAppException as e:
-            logger.error(e.message)
+            validate_name(name)
+            validate_address(address)
+            validate_phone_no(phone_no)
+        except Exception as e:
+            message = e.message if isinstance(e, AddressAppException) else str(e)
+            logger.error(message)
             return None
 
         temp_contact = Contact(name, address, phone_no)
-        if contact := self.get_contact_by_id(temp_contact.id):
+        contact = self.get_contact_by_id(temp_contact.id)
+        if contact:
             logger.warning(f"Contact {contact} already exists")
             return contact
 
