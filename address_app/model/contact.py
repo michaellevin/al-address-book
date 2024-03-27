@@ -48,7 +48,7 @@ class Contact:
     _id: int = field(init=False, repr=False, compare=False)
 
     def __post_init__(self):
-        """Generates a unique identifier for the contact based on its details."""
+        """Generates a unique identifier for the contact based on its name and address."""
         self._id = hash_input(self.name.strip() + self.address.strip())
 
     @property

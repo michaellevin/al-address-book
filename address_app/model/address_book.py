@@ -169,7 +169,7 @@ class AddressBook:
 
     # def remove_record(self, contact_id: int) -> Optional[Contact]: ...
 
-    def to_dict(self):
+    def as_dict(self):
         """Represents the address book as a dictionary.
 
         Returns:

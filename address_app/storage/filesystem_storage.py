@@ -41,7 +41,6 @@ class FileSystemStorage(IStorage):
             #     self.root.rmdir()
 
         except FileNotFoundError:
-            # TODO fix print statement -> exception
             print(f"File {self.storage_filepath} not found for deletion")
             # raise
 

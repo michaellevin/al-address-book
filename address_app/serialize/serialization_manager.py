@@ -15,7 +15,7 @@ class SerializationManager:
         # Determine the appropriate serialization strategy based on the URL or file extension
         try:
             strategy = SerializeStrategyFactory.get_strategy(url)
-            data = self.address_book.to_dict()
+            data = self.address_book.as_dict()
             strategy.serialize(data, url)
             return True
         except SerializationException as e:
