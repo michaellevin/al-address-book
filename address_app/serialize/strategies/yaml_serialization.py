@@ -1,4 +1,8 @@
+import os
 from .base_serialization import ISerializeStrategy
+from ...base.aux_utils import try_import
+
+# from ...base.exceptions import SerializationException
 
 
 class YAMLStrategy(ISerializeStrategy):
@@ -13,9 +17,10 @@ class YAMLStrategy(ISerializeStrategy):
     @classmethod
     def serialize(cls, data: dict, url: str):
         """Serialize the given data to YAML."""
-        import yaml
-        import os
-
+        yaml_module = try_import("yaml")
+        if yaml_module is None:
+            raise ModuleNotFoundError("pyyaml")
+            # raise FormatModuleNotInstalledException("pyyaml")
         os.makedirs(os.path.dirname(url), exist_ok=True)
         with open(url, "w") as file:
-            yaml.dump(data, file, sort_keys=False)
+            yaml_module.dump(data, file, sort_keys=False)

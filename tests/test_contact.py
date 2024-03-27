@@ -3,6 +3,14 @@ from address_app.model import Contact
 
 
 class TestContact(unittest.TestCase):
+    """
+    TestContact class is designed to test the functionality and behavior of the Contact class.
+
+    It verifies that contact instances are correctly compared for equality or inequality based on
+    their attributes, and it checks how contacts are handled when certain information (like a phone number)
+    is missing.
+    """
+
     def setUp(self):
         # Setup some contacts for testing
         self.contact1 = Contact(
@@ -31,7 +39,14 @@ class TestContact(unittest.TestCase):
         )
 
     def test_contact_inequality(self):
-        # Contacts with different names, addresses, or phone numbers should not be considered equal
+        """
+        Test the inequality comparison between Contact instances.
+
+        Contacts should not be considered equal if they have different details, such as a different
+        name and address. But they should be considered equal if they have the same name and address
+        but different phone numbers.
+
+        """
         self.assertNotEqual(
             self.contact1,
             self.contact2,
@@ -44,7 +59,13 @@ class TestContact(unittest.TestCase):
         )
 
     def test_contact_without_phone_number(self):
-        # Contact without a phone number should be handled correctly
+        """
+        Verify handling of Contact instances without a phone number.
+
+        Ensures that a Contact without a phone number is handled correctly, implying that the
+        phone number attribute should be None or handled in a manner that indicates the absence
+        of a phone number.
+        """
         self.assertIsNotNone(
             self.contact2.phone_no,
             "Contact phone number should be None if not provided",

@@ -69,7 +69,7 @@ class TestAddressBook(unittest.TestCase):
     def test_find_contact_by_name(self):
         self.book.add_record("Jane Doe", "456 Elm St", "555-6789")
         self.book.add_record("John Doe", "123 Elm St", "535-6789")
-        results = self.book.find_contact(name="*Doe")
+        results = self.book.find_contacts(name="*Doe")
         self.assertEqual(
             len(results), 2, "Should find two contacts matching name pattern"
         )

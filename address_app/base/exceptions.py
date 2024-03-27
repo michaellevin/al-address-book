@@ -99,3 +99,9 @@ class NotImplementerSerializationException(SerializationException):
     def __init__(self, name: str):
         message = f"{name} serialization not implemented yet"
         super().__init__(message)
+
+
+# class FormatModuleNotInstalledException(SerializationException):
+#     def __init__(self, module_name: str):
+#         message = f"Failed to import module {module_name}. Please run `pip install -r requirements.txt`"
+#         super().__init__(message)

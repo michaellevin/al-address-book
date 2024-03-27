@@ -219,7 +219,7 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
         self._save()
         return job_output
 
-    def find_contact(self, book_name: str, **criteria) -> list:
+    def find_contacts(self, book_name: str, **criteria) -> list:
         """
         Finds contacts in the specified address book based on the provided criteria.
 
@@ -235,7 +235,7 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
             logger.warning(f"Address book '{book_name}' not found.")
             return []
 
-        return book.find_contact(**criteria)
+        return book.find_contacts(**criteria)
 
     def clear_book_contents(self, book_name: str) -> None:
         """

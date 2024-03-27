@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field, fields
 from typing import Dict
-from ..base.hash_utils import hash_input
+from ..base.aux_utils import hash_input
 
 
 @dataclass

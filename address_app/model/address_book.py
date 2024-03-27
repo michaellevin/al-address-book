@@ -132,7 +132,7 @@ class AddressBook:
         logger.debug(f"Added contact {new_contact}")
         return JobStatus(Status.SUCCESS, new_contact, "Contact added successfully")
 
-    def find_contact(self, **criteria) -> List[Contact]:
+    def find_contacts(self, **criteria) -> List[Contact]:
         """Finds contacts that match the given search criteria.
 
         Args:
