@@ -18,6 +18,7 @@ from ..base.exceptions import (
     InvalidContactNameException,
     InvalidContactPhoneNumberException,
 )
+from ..base.job_status import JobStatus, Status
 from .contact import Contact
 
 logger = get_logger()
@@ -93,13 +94,10 @@ class AddressBook:
         """
         return self._contacts.get(contact_id)
 
-    def add_record(
-        self, name: str, address: str, phone_no: Optional[str]
-    ) -> Optional[Contact]:
+    def add_record(self, name: str, address: str, phone_no: Optional[str]) -> JobStatus:
         """Attempts to add a new contact record to the address book.
 
         Validates the provided name, address, and phone number before addition.
-        Logs an error and returns None if validation fails.
 
         Args:
             name (str): The name of the contact.
@@ -107,7 +105,13 @@ class AddressBook:
             phone_no (str, optional): The contact's phone number.
 
         Returns:
-            Optional[Contact]: The added contact object, or None if the addition fails.
+            JobStatus: An object indicating the success or failure of the operation.
+                .status: The status of the operation.
+                    Status.Success: The contact was added successfully.
+                    Status.Cancelled: The contact already exists.
+                    Status.Error: An error occurred during contact addition.
+                .return_value: The contact object if added successfully or found the existing contact, otherwise None.
+                .message: A message describing the result of the operation.
         """
         try:
             validate_name(name)
@@ -116,17 +120,17 @@ class AddressBook:
         except Exception as e:
             message = e.message if isinstance(e, AddressAppException) else str(e)
             logger.error(message)
-            return None
+            return JobStatus(Status.ERROR, None, message)
 
-        temp_contact = Contact(name, address, phone_no)
-        contact = self.get_contact_by_id(temp_contact.id)
+        new_contact = Contact(name, address, phone_no)
+        contact = self.get_contact_by_id(new_contact.id)
         if contact:
             logger.warning(f"Contact {contact} already exists")
-            return contact
+            return JobStatus(Status.CANCELLED, contact, "Contact already exists")
 
-        self._contacts[temp_contact.id] = temp_contact
-        logger.info(f"Added contact {temp_contact}")
-        return temp_contact
+        self._contacts[new_contact.id] = new_contact
+        logger.debug(f"Added contact {new_contact}")
+        return JobStatus(Status.SUCCESS, new_contact, "Contact added successfully")
 
     def find_contact(self, **criteria) -> List[Contact]:
         """Finds contacts that match the given search criteria.

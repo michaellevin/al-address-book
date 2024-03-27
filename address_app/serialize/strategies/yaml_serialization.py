@@ -3,6 +3,10 @@ from .base_serialization import ISerializeStrategy
 
 class YAMLStrategy(ISerializeStrategy):
     @classmethod
+    def format(cls) -> str:
+        return "YAML"
+
+    @classmethod
     def get_supported_extensions(cls) -> str:
         return ("yml", "yaml")
 

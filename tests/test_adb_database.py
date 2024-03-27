@@ -1,6 +1,7 @@
 import unittest
 import os
 import address_app as app
+from address_app.base.job_status import Status
 
 
 class TestAdbBase(unittest.TestCase):
@@ -88,6 +89,40 @@ class TestAdbAddRemoveBooks(unittest.TestCase):
         self.adb.delete_address_book(temp_book_name)
         self.assertIsNone(
             self.adb.get_address_book(temp_book_name), "Book should be removed"
+        )
+
+    def test_add_existing_book(self):
+        job_output = self.adb.create_address_book("TestBook")
+        self.assertIsNotNone(job_output.return_value, "Book should be created")
+
+        other_job_output = self.adb.create_address_book("TestBook")
+        self.assertIs(
+            other_job_output.return_value,
+            job_output.return_value,
+            "Creating an existing book should return the existing book",
+        )
+
+    def test_add_record(self):
+        job_output = self.adb.create_address_book("TestBook")
+        self.assertIsNotNone(job_output.return_value, "Book should be created")
+
+        job_output = self.adb.add_contact(
+            "TestBook", "John Doe", "123 Main St", "555-1234"
+        )
+        self.assertEqual(job_output.status, Status.SUCCESS, "Record should be added")
+
+        other_job_output = self.adb.add_contact(
+            "TestBook", "John Doe", "123 Main St", "555-1234"
+        )
+        self.assertIs(
+            other_job_output.return_value,
+            job_output.return_value,
+            "Record should not be added, already exists",
+        )
+        self.assertIs(
+            other_job_output.status,
+            Status.CANCELLED,
+            "Record should not be added, already exists",
         )
 
     def tearDown(self):

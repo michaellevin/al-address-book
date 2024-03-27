@@ -1,9 +1,6 @@
 import logging
 from address_app import __app_name__
 
-import logging
-from address_app import __app_name__
-
 #: ANSI escape sequences for colors
 _COLORS = {
     "WARNING": "\033[93m",  # Yellow
@@ -63,3 +60,19 @@ def get_logger():
         _logger_initialized = True
 
     return logger
+
+
+def set_logger_level(level=logging.DEBUG):
+    """
+    Sets the log level for the application's logger. Setting the level to
+    logging.CRITICAL effectively mutes the logger. This function allows for
+    dynamic adjustment of the logging verbosity.
+
+    Args:
+        level (int): The logging level to set. Use logging module's constants
+                     like logging.DEBUG, logging.INFO, etc.
+    """
+    logger = get_logger()  # Ensure the logger is initialized
+    logger.setLevel(level)
+    for handler in logger.handlers:
+        handler.setLevel(level)

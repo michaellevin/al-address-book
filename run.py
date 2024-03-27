@@ -3,6 +3,8 @@ from pprint import pprint
 
 logger = app.get_logger()
 adb = app.AdbDatabase()
+print(app.get_supported_serialization_formats())
+print(adb.get_address_book("book1"))
 """
 adb.clear()
 book = adb.create_address_book("Book1")

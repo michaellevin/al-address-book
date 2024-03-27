@@ -5,6 +5,11 @@ from .base_serialization import ISerializeStrategy
 
 
 class JSONStrategy(ISerializeStrategy):
+
+    @classmethod
+    def format(cls) -> str:
+        return "JSON"
+
     @classmethod
     def get_supported_extensions(cls) -> Tuple[str]:
         return ("json",)

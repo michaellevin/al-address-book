@@ -5,6 +5,11 @@ from typing import Tuple
 class ISerializeStrategy(ABC):
     @classmethod
     @abstractmethod
+    def format(cls) -> str:
+        pass
+
+    @classmethod
+    @abstractmethod
     def serialize(cls, data: dict, url: str):
         pass
 

@@ -2,6 +2,7 @@ from typing import Optional, Union, Dict
 from pathlib import Path
 
 from .base import get_logger
+from .base.job_status import JobStatus, Status
 from .model import AddressBook
 from .storage import FileSystemStorage
 
@@ -105,27 +106,40 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
         """
         return self.storage.get_filepath_as_str()
 
-    def create_address_book(self, name: str) -> AddressBook:
+    def create_address_book(self, name: str) -> JobStatus:
         """
         Creates and returns a new address book with the given name.
+        If an address book with the same name already exists, returns the existing address book.
 
         Args:
             name (str): The name of the address book to create.
 
         Returns:
-            AddressBook: The newly created address book.
+            JobStatus: An object indicating the success or failure of the
+            operation, including the created address book on success or if it already exists.
         """
         book = self.get_address_book(name)
         if book is not None:
-            logger.warning(f"Address Book {name} already exists")
-            return book
+            message = f"Address Book '{name}' already exists."
+            logger.warning(message)
+            # If returning the book is essential, consider including it in the return_value of JobStatus
+            return JobStatus(Status.CANCELLED, book, message)
 
-        logger.debug(f"Creating address book {name}")
-        self._address_books[name] = AddressBook(name)
-        self._save()
-        return self._address_books[name]
+        try:
+            logger.debug(f"Creating address book '{name}'")
+            self._address_books[name] = AddressBook(name)
+            self._save()
+            message = f"Address book '{name}' created successfully."
+            return JobStatus(Status.SUCCESS, self._address_books[name], message)
+        except Exception as e:
+            logger.error(f"Failed to create address book '{name}': {e}")
+            return JobStatus(
+                Status.ERROR,
+                None,
+                f"Failed to create address book '{name}'. Error: {e}",
+            )
 
-    def get_address_book(self, name: Optional[str] = None) -> Union[AddressBook, None]:
+    def get_address_book(self, name: Optional[str]) -> Union[AddressBook, None]:
         """
         Retrieves an address book by name or the first available one if no name is provided.
 
@@ -135,39 +149,32 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
         Returns:
             AddressBook or None: The requested address book, or None if not found.
         """
-        if name is None:
-            all_books = self.get_address_books()
-            if all_books:
-                return list(all_books.values())[0]
-            return None
+        all_books = self._address_books
+        if name is None and all_books:
+            return list(all_books.values())[0]
+        return all_books.get(name)
 
-        return self._address_books.get(name)
-
-    def delete_address_book(self, name: str) -> None:
+    def delete_address_book(self, name: str) -> JobStatus:
         """
         Deletes an address book by name.
 
         Args:
             name (str): The name of the address book to delete.
+
+        Returns:
+            JobStatus: An object indicating the success or failure of the operation.
+
         """
         if name in self._address_books:
             logger.debug(f"Deleting address book {name}")
             del self._address_books[name]
             self._save()
+            return JobStatus(Status.SUCCESS, None, f"Address book '{name}' deleted.")
         else:
             logger.warning(f"Address Book {name} does not exist")
-
-    def clear_book_contents(self, book_name: str) -> None:
-        """
-        Clears all contacts from the specified address book.
-
-        Args:
-            book_name (str): The name of the address book to clear.
-        """
-        logger.debug(f"Clearing address book {book_name}: Remove all contacts")
-        if book_name in self._address_books:
-            self._address_books[book_name].clear()
-            self._save()
+            return JobStatus(
+                Status.CANCELLED, None, f"Address book '{name}' does not exist."
+            )
 
     def get_address_books(self) -> Dict[str, AddressBook]:
         """
@@ -186,6 +193,61 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
         logger.debug("Clearing Database: Remove all the address books")
         self._address_books = {}
         self._save()
+
+    def add_contact(
+        self, book_name: str, name: str, address: str, phone_no: Optional[str]
+    ) -> JobStatus:
+        """
+        Adds a new contact to the specified address book.
+
+        Args:
+            book_name (str): The name of the address book to add the contact to.
+            name (str): The name of the contact.
+            address (str): The address of the contact.
+            phone_no (Optional[str]): The phone number of the contact.
+
+        Returns:
+            JobStatus: An object indicating the success or failure of the operation.
+        """
+        book = self.get_address_book(book_name)
+        if book is None:
+            message = f"Address book '{book_name}' not found."
+            logger.warning(message)
+            return JobStatus(Status.ERROR, None, message)
+
+        job_output = book.add_record(name, address, phone_no)
+        self._save()
+        return job_output
+
+    def find_contact(self, book_name: str, **criteria) -> list:
+        """
+        Finds contacts in the specified address book based on the provided criteria.
+
+        Args:
+            book_name (str): The name of the address book to search in.
+            **criteria: The search criteria to match contacts against.
+
+        Returns:
+            list: A list of contacts that match the search criteria.
+        """
+        book = self.get_address_book(book_name)
+        if book is None:
+            logger.warning(f"Address book '{book_name}' not found.")
+            return []
+
+        return book.find_contact(**criteria)
+
+    def clear_book_contents(self, book_name: str) -> None:
+        """
+        Clears all contacts from the specified address book.
+
+        Args:
+            book_name (str): The name of the address book to clear.
+        """
+        logger.debug(f"Clearing address book {book_name}: Remove all contacts")
+        if book_name in self._address_books:
+            self._address_books[book_name].clear()
+            self._save()
 
     def _save(self) -> bool:
         """
@@ -210,12 +272,7 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
     def deinit(self) -> None:
         """
         Deinitializes the database and optionally clears the storage.
-
-        Args:
-            root (Optional[str]): The root directory of the database to deinitialize.
         """
-
-        # TODO check deinitialization logic
 
         logger.debug("Deinitializing database")
         self.clear()

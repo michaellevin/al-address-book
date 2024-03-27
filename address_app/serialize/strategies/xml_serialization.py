@@ -3,6 +3,10 @@ from .base_serialization import ISerializeStrategy
 
 class XMLStrategy(ISerializeStrategy):
     @classmethod
+    def format(cls) -> str:
+        return "XML"
+
+    @classmethod
     def get_supported_extensions(cls) -> str:
         return ("xml",)
 
