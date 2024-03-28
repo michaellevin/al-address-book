@@ -7,8 +7,10 @@
 ## CLI Usage
 
 
+
 ## Documentation
 
-For more detailed information on setting up your development environment, see the following guides:
+For more detailed information on setting up your development environment, see the following API Guide:
 
-- [Development Setup](DEVELOPMENT.md)
+- [API](docs/build/html/index.html)
+

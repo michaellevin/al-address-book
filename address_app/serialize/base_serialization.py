@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from ..database import DbSchema
+from ..database.db_schema import DbSchema
 
 
 class ISerializeStrategy(ABC):

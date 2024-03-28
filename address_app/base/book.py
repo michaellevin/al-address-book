@@ -57,4 +57,7 @@ class Book:
         return len(self._contacts)
 
     def __repr__(self) -> str:
-        return f"AddressBook(name={self.name}, ({len(self)} contacts)"
+        return f"AddressBook(name={self.name}, ({len(self)} contacts))"
+
+    def __str__(self) -> str:
+        return f"AddressBook(name={self.name}, ({len(self)} contacts))"

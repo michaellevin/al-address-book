@@ -1,23 +1,56 @@
 address\_app.serialize package
 ==============================
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   address_app.serialize.strategies
-
 Submodules
 ----------
 
-.. toctree::
-   :maxdepth: 4
+address\_app.serialize.base\_serialization module
+-------------------------------------------------
 
-   address_app.serialize.serialization_factory
-   address_app.serialize.serialization_manager
-   address_app.serialize.serialization_registry
+.. automodule:: address_app.serialize.base_serialization
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+address\_app.serialize.csv\_serialization module
+------------------------------------------------
+
+.. automodule:: address_app.serialize.csv_serialization
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+address\_app.serialize.json\_serialization module
+-------------------------------------------------
+
+.. automodule:: address_app.serialize.json_serialization
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+address\_app.serialize.serialization\_registry module
+-----------------------------------------------------
+
+.. automodule:: address_app.serialize.serialization_registry
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+address\_app.serialize.xml\_serialization module
+------------------------------------------------
+
+.. automodule:: address_app.serialize.xml_serialization
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+address\_app.serialize.yaml\_serialization module
+-------------------------------------------------
+
+.. automodule:: address_app.serialize.yaml_serialization
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------
@@ -26,4 +59,3 @@ Module contents
    :members:
    :undoc-members:
    :show-inheritance:
-   :private-members:

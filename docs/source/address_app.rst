@@ -8,7 +8,7 @@ Subpackages
    :maxdepth: 4
 
    address_app.base
-   address_app.model
+   address_app.database
    address_app.serialize
    address_app.storage
    address_app.view
@@ -16,10 +16,13 @@ Subpackages
 Submodules
 ----------
 
-.. toctree::
-   :maxdepth: 4
+address\_app.adb module
+-----------------------
 
-   address_app.database
+.. automodule:: address_app.adb
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------
@@ -28,4 +31,3 @@ Module contents
    :members:
    :undoc-members:
    :show-inheritance:
-   :private-members:

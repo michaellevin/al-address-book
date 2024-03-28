@@ -4,11 +4,21 @@ address\_app.storage package
 Submodules
 ----------
 
-.. toctree::
-   :maxdepth: 4
+address\_app.storage.base\_storage module
+-----------------------------------------
 
-   address_app.storage.filesystem_storage
-   address_app.storage.storage_interface
+.. automodule:: address_app.storage.base_storage
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+address\_app.storage.filesystem\_storage module
+-----------------------------------------------
+
+.. automodule:: address_app.storage.filesystem_storage
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------
@@ -17,4 +27,3 @@ Module contents
    :members:
    :undoc-members:
    :show-inheritance:
-   :private-members:

@@ -17,7 +17,6 @@ class TestFileSystemStorage(unittest.TestCase):
         root = "tests"
         strategy = SerializeStrategyRegistry.get_strategy_for_extension("xml")
         self.file_storage = address_app.storage.DbFileSystemStorage(strategy, root)
-        self.file_storage.init()
         self.assertTrue(
             self.file_storage.is_initialized(), "Storage should be initialized"
         )

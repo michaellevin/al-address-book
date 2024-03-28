@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Dict, List
 from dataclasses import dataclass, field
 
 ContactDictTypeAlias = Dict[str, str]
@@ -10,33 +10,48 @@ DbBooksTypeAlias = Dict[str, BookContactIdsTypeAlias]
 
 @dataclass
 class DbSchema:
-    """Represents the database schema.
+    """
+    Represents the database schema, including a mapping of contacts and address books.
+
+    This class maintains two primary attributes: `contacts` and `books`. The `contacts`
+    attribute is a dictionary mapping unique contact IDs to contact details, while the
+    `books` attribute maps the name of address books to lists of contact IDs contained
+    within each book.
+
+    Attributes:
+        contacts (Dict[int, Dict[str, str]]): A dictionary where each key is a unique
+            contact ID (an integer), and each value is another dictionary containing
+            the contact's name, address, and phone number.
+        books (Dict[str, List[int]]): A dictionary where each key is the name of an
+            address book (a string), and each value is a list of IDs (integers) of
+            contacts contained within that address book.
 
     Example Usage:
         >>> schema = DbSchema()
-        >>> schema
-        DbSchema(contacts=[], books=[])
+        >>> print(schema)
+        DbSchema(contacts={}, books={})
 
-    contacts: A list of contacts in the database.
-    books: A list of address books in the database.
+        >>> schema.contacts = {
+        ...     3914141904: {
+        ...         'name': 'John Doe',
+        ...         'address': '123 Main St',
+        ...         'phone_no': '555-1234'
+        ...     },
+        ...     3914141905: {
+        ...         'name': 'Jane Doe',
+        ...         'address': '456 Elm St',
+        ...         'phone_no': '555-6789'
+        ...     }
+        ... }
+        >>> schema.books = {
+        ...     'TestBook': [3914141904, 3914141905],
+        ...     'AnotherBook': [3914141904]
+        ... }
+        >>> print(schema.contacts)
+        {3914141904: {'name': 'John Doe', 'address': '123 Main St', 'phone_no': '555-1234'}, 3914141905: {'name': 'Jane Doe', 'address': '456 Elm St', 'phone_no': '555-6789'}}
 
-    contacts = {
-        3914141904: {
-                'name': 'John Doe',
-                'address': '123 Main St',
-                'phone_no': '555-1234'
-        },
-        3914141905: {
-                'name': 'Jane Doe',
-                'address': '456 Elm St',
-                'phone_no': '555-6789'
-        }
-    }
-    books = {
-        'TestBook': [3914141904, 3914141905],
-        'AnotherBook': [3914141904]
-    }
-
+        >>> print(schema.books)
+        {'TestBook': [3914141904, 3914141905], 'AnotherBook': [3914141904]}
     """
 
     contacts: DbContactsTypeAlias = field(default_factory=dict)

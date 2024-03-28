@@ -4,13 +4,61 @@ address\_app.base package
 Submodules
 ----------
 
-.. toctree::
-   :maxdepth: 4
+address\_app.base.aux\_utils module
+-----------------------------------
 
-   address_app.base.consts
-   address_app.base.exceptions
-   address_app.base.hash_utils
-   address_app.base.logger
+.. automodule:: address_app.base.aux_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+address\_app.base.book module
+-----------------------------
+
+.. automodule:: address_app.base.book
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+address\_app.base.consts module
+-------------------------------
+
+.. automodule:: address_app.base.consts
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+address\_app.base.contact module
+--------------------------------
+
+.. automodule:: address_app.base.contact
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+address\_app.base.exceptions module
+-----------------------------------
+
+.. automodule:: address_app.base.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+address\_app.base.logger module
+-------------------------------
+
+.. automodule:: address_app.base.logger
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+address\_app.base.validator module
+----------------------------------
+
+.. automodule:: address_app.base.validator
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------
@@ -19,4 +67,3 @@ Module contents
    :members:
    :undoc-members:
    :show-inheritance:
-   :private-members:

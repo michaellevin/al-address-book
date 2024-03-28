@@ -1,47 +1,44 @@
-import address_app as address_app
-from pprint import pprint
+# Description: This file is used to test the address_app module.
+import address_app
 
-logger = address_app.get_logger()
-adb = address_app.AdbDatabase()
-print(address_app.get_supported_serialization_formats())
-print(adb.get_address_book("TestBook"))
-adb.deinit()
-# adb.clear()
-# book = adb.create_address_book("Book1")
+# Create an instance of AdbConnector
+adb = address_app.AdbConnector("tests", "json")
 
-# book1 = adb.get_address_book("Book1")
-# # book2 = adb.get_address_book("Book1")
-# # print(book1, book2, book1 is book2)
+# Clear the database
+adb.db_manager.clear_database()
 
-# book1.add_record("John Doe", "123 Main St", "555-1234")
-# book1.add_record("John Doe", "123 Main St", "555-1234")
-# book1.add_record("   ", "123 Main St", "555-1234")
-# book1.add_record("John Denver", "123 Main St", "556-1234")
-# book1.add_record("Bill Cane", "1 Goodwin St", "+1 (903) 1556-124")
-# book1.add_record("Bill Cane", "1 Goodwin St", "+1df (903) 1556-124")
-# print(book1)
-# # adb.create_address_book("Book2")
-# print(book1.find_contacts(name="John*"))
-# print(book1.find_contacts(address="123*"))
-# print(book1.find_contacts(phone_no="555*"))
-# print(book1.find_contacts(phone_no="555*4"))
+# Create an empty book
+adb.db_manager.create_empty_book("book1")
 
-# dm = app.ViewManager(book1)
-# dm.set_formatter("md")
-# dm.display()
-# dm.set_formatter("xz")
-# dm.display()
-# dm.set_formatter("text")
-# dm.display()
+# Add contacts to the book
+adb.db_manager.add_contact("book1", "John Doe", "123 Main St", "555-1234")
+adb.db_manager.add_contact("book1", "John Denver", "123 Main St", "555-1234")
+adb.db_manager.add_contact("book1", "Jane Doe", "587 St", "555-1234")
+adb.db_manager.add_contact("book1", "Craig Hack", "456 Elm St", "1555-1234")
 
-# sm = app.SerializationManager(book1)
+# Get the book and list the contacts
+book1 = adb.db_manager.get_book("book1")
+print(book1)
+# Output: Book(name='book1', contacts=[Contact(name='John Doe', address='123 Main St', phone_no='555-1234'), Contact(name='John Denver', address='123 Main St', phone_no='555-1234')])
 
-# try:
-#     sm.serialize(".build/book1.json")
-#     sm.serialize(".build/book1.xml")
-#     sm.serialize(".build/book1.yaml")
-#     sm.serialize(".build/book1.csv")
-#     sm.serialize(".build/book1.xyz")
-# except app.exceptions.AddressAppException as e:
-#     logger.error(e.message)
-# # # adb.deinit()
+# List the contacts in the book
+contacts = adb.db_manager.list_contacts("book1")
+print(contacts)
+
+# Find contacts by name
+filtered_contacts = adb.db_manager.find_contacts("book1", name="John*")
+print(filtered_contacts)
+
+# Show the address book as HTML
+print(adb.render(format="html"))
+
+adb.change_strategy("xml")
+adb.change_strategy("yaml")
+
+# adb.delete()
+print(adb)
+
+adb2 = address_app.AdbConnector("tests2", "json")
+adb3 = address_app.AdbConnector(r"C:\Cd\tests\al-address-book\tests", "json")
+print(adb2 == adb3)
+print(adb3 == adb)

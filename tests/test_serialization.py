@@ -3,7 +3,6 @@ from unittest.mock import patch
 from pathlib import Path
 from address_app.serialize import (
     SerializeStrategyRegistry,
-    ISerializeStrategy,
     get_supported_formats,
 )
 from address_app.base.consts import DEFAULT_ROOT_PATH, RELATIVE_STORAGE_PATH

@@ -3,11 +3,12 @@ from dataclasses import dataclass
 import fnmatch
 
 from ..base import get_logger
-from .db_schema import DbBooksTypeAlias
+from .db_schema import DbSchema, DbBooksTypeAlias
 from ..base.book import Book
 from ..base.contact import Contact
 from ..base.validator import ContactValidation
 from ..base.exceptions import InvalidContactDataException
+from ..storage.base_storage import IStorage
 
 logger = get_logger()
 
@@ -15,7 +16,7 @@ logger = get_logger()
 class DatabaseManager:
     """DatabaseManager class for managing the database."""
 
-    def __init__(self, storage):
+    def __init__(self, storage: IStorage):
         """Initialize the DatabaseManager with a storage object.
 
         Args:
@@ -23,7 +24,15 @@ class DatabaseManager:
 
         """
         self._storage = storage
-        self._storage.init()
+
+    def get_database_content(self) -> DbSchema:
+        """Get the database contents.
+
+        Returns:
+            DbSchema: The database contents.
+
+        """
+        return self._storage.read()
 
     def list_books(self) -> DbBooksTypeAlias:
         """List all books in the database.
@@ -51,8 +60,6 @@ class DatabaseManager:
         for book in books:
             if book.name == name:
                 return book
-
-        logger.warning(f"Book '{name}' not found.")
         return None
 
     def add_book(self, book: Book) -> bool:
@@ -79,7 +86,7 @@ class DatabaseManager:
 
     def add_contact(
         self, book_name: str, name: str, address: str, phoneno: str
-    ) -> Union[Contact | None]:
+    ) -> Union[Contact, None]:
         """Add a contact to a book.
 
         Args:
@@ -125,7 +132,7 @@ class DatabaseManager:
         self._storage.write(db_contents)
         return contact
 
-    def list_contacts(self, book_name: Book) -> List[Contact]:
+    def list_contacts(self, book_name: str) -> List[Contact]:
         """List all contacts in a book.
 
         Args:
@@ -178,3 +185,8 @@ class DatabaseManager:
                 for key, value in criteria.items()
             )
         ]
+
+    def clear_database(self):
+        """Clear the database."""
+        self._storage.write(DbSchema())
+        logger.info("Database cleared.")

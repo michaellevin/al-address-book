@@ -2,9 +2,10 @@ from typing import Optional, Union, Dict
 from pathlib import Path
 
 from .base import get_logger
-from .base.job_status import JobStatus, Status
-from .model import AddressBook
+from .serialize import SerializeStrategyRegistry, get_supported_formats
 from .storage import DbFileSystemStorage
+from .database import DatabaseManager
+from .view import ViewerRegistry
 
 logger = get_logger()
 
@@ -58,7 +59,7 @@ class _SingletonRootMeta(type):
         cls._instances.clear()
 
 
-class AdbDatabase(metaclass=_SingletonRootMeta):
+class AdbConnector(metaclass=_SingletonRootMeta):
     """
     Provides functionality for managing address books with persistent storage.
 
@@ -71,19 +72,24 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
     Methods are documented with their functionality.
     """
 
-    def __init__(self, root: Optional[str] = None):
-        self.init(root)
+    def __init__(self, root: Optional[str] = None, format: Optional[str] = "json"):
+        if format and format not in get_supported_formats():
+            logger.warning(
+                f"Unsupported serialization format: {format}. Using default: json"
+            )
+        strategy = SerializeStrategyRegistry.get_strategy_for_extension(format)
+        self._storage = DbFileSystemStorage(strategy, root)
+        self._db_manager = DatabaseManager(self._storage)
 
-    def init(self, root: Optional[Path] = None) -> None:
+    @property
+    def db_manager(self) -> DatabaseManager:
         """
-        Sets up the database storage and reads the existing data from storage.
+        Returns the database manager instance associated with the database.
 
-        Args:
-            root (Path): The root path for the database storage.
+        Returns:
+            DatabaseManager: The database manager instance.
         """
-        logger.debug("Initializing database")
-        self.storage = DbFileSystemStorage(root)
-        self._read()
+        return self._db_manager
 
     @property
     def root(self) -> str:
@@ -93,7 +99,7 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
         Returns:
             str: The root path for the database storage.
         """
-        return self.storage.root_as_str()
+        return self._storage.root_as_str()
 
     @property
     def storage_filepath(self) -> str:
@@ -104,178 +110,35 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
         Returns:
             str: The file path for the database storage.
         """
-        return self.storage.filepath_as_str()
+        return self._storage.filepath_as_str()
 
-    def create_address_book(self, name: str) -> JobStatus:
+    def change_strategy(self, format: str) -> None:
         """
-        Creates and returns a new address book with the given name.
-        If an address book with the same name already exists, returns the existing address book.
+        Changes the serialization strategy for the database storage.
 
         Args:
-            name (str): The name of the address book to create.
-
-        Returns:
-            JobStatus: An object indicating the success or failure of the
-            operation, including the created address book on success or if it already exists.
+            format (str): The format of the serialization strategy to use.
         """
-        book = self.get_address_book(name)
-        if book is not None:
-            message = f"Address Book '{name}' already exists."
-            logger.warning(message)
-            # If returning the book is essential, consider including it in the return_value of JobStatus
-            return JobStatus(Status.CANCELLED, book, message)
-
-        try:
-            logger.debug(f"Creating address book '{name}'")
-            self._address_books[name] = AddressBook(name)
-            self._save()
-            message = f"Address book '{name}' created successfully."
-            return JobStatus(Status.SUCCESS, self._address_books[name], message)
-        except Exception as e:
-            logger.error(f"Failed to create address book '{name}': {e}")
-            return JobStatus(
-                Status.ERROR,
-                None,
-                f"Failed to create address book '{name}'. Error: {e}",
+        if format not in get_supported_formats():
+            logger.warning(
+                f"Unsupported serialization format: {format}. Using default: json"
             )
+        self._storage.set_strategy(
+            SerializeStrategyRegistry.get_strategy_for_extension(format)
+        )
 
-    def get_address_book(self, name: Optional[str]) -> Union[AddressBook, None]:
+    def render(self, format: str = "html") -> Union[str, None]:
         """
-        Retrieves an address book by name or the first available one if no name is provided.
+        Renders the database contents using the specified format.
 
         Args:
-            name (Optional[str]): The name of the address book to retrieve. If None, returns the first address book.
+            format (str): The format to render the database contents in.
 
         Returns:
-            AddressBook or None: The requested address book, or None if not found.
+            Union[str, None]: The rendered database contents as a string, or None if rendering failed.
         """
-        all_books = self._address_books
-        if name is None and all_books:
-            return list(all_books.values())[0]
-        return all_books.get(name)
+        return ViewerRegistry.render(self._storage.read(), format)
 
-    def delete_address_book(self, name: str) -> JobStatus:
-        """
-        Deletes an address book by name.
-
-        Args:
-            name (str): The name of the address book to delete.
-
-        Returns:
-            JobStatus: An object indicating the success or failure of the operation.
-
-        """
-        if name in self._address_books:
-            logger.debug(f"Deleting address book {name}")
-            del self._address_books[name]
-            self._save()
-            return JobStatus(Status.SUCCESS, None, f"Address book '{name}' deleted.")
-        else:
-            logger.warning(f"Address Book {name} does not exist")
-            return JobStatus(
-                Status.CANCELLED, None, f"Address book '{name}' does not exist."
-            )
-
-    def get_address_books(self) -> Dict[str, AddressBook]:
-        """
-        Retrieves all address books in the database.
-
-        Returns:
-            Dict[str, AddressBook]: A dictionary of all address books, keyed by their name.
-        """
-        logger.debug("Getting address books")
-        return self._address_books
-
-    def clear(self) -> None:
-        """
-        Clears all data from the database, removing all address books.
-        """
-        logger.debug("Clearing Database: Remove all the address books")
-        self._address_books = {}
-        self._save()
-
-    def add_contact(
-        self, book_name: str, name: str, address: str, phone_no: Optional[str]
-    ) -> JobStatus:
-        """
-        Adds a new contact to the specified address book.
-
-        Args:
-            book_name (str): The name of the address book to add the contact to.
-            name (str): The name of the contact.
-            address (str): The address of the contact.
-            phone_no (Optional[str]): The phone number of the contact.
-
-        Returns:
-            JobStatus: An object indicating the success or failure of the operation.
-        """
-        book = self.get_address_book(book_name)
-        if book is None:
-            message = f"Address book '{book_name}' not found."
-            logger.warning(message)
-            return JobStatus(Status.ERROR, None, message)
-
-        job_output = book.add_record(name, address, phone_no)
-        self._save()
-        return job_output
-
-    def find_contacts(self, book_name: str, **criteria) -> list:
-        """
-        Finds contacts in the specified address book based on the provided criteria.
-
-        Args:
-            book_name (str): The name of the address book to search in.
-            **criteria: The search criteria to match contacts against.
-
-        Returns:
-            list: A list of contacts that match the search criteria.
-        """
-        book = self.get_address_book(book_name)
-        if book is None:
-            logger.warning(f"Address book '{book_name}' not found.")
-            return []
-
-        return book.find_contacts(**criteria)
-
-    def clear_book_contents(self, book_name: str) -> None:
-        """
-        Clears all contacts from the specified address book.
-
-        Args:
-            book_name (str): The name of the address book to clear.
-        """
-        logger.debug(f"Clearing address book {book_name}: Remove all contacts")
-        if book_name in self._address_books:
-            self._address_books[book_name].clear()
-            self._save()
-
-    def _save(self) -> bool:
-        """
-        Saves the current state of the database to persistent storage.
-
-        Returns:
-            bool: True if the save operation was successful, False otherwise.
-        """
-        self.storage.write(self._address_books)
-        return True
-
-    def _read(self) -> bool:
-        """
-        Loads the database state from persistent storage.
-
-        Returns:
-            bool: True if the read operation was successful, False otherwise.
-        """
-        self._address_books = self.storage.read() or {}
-        return True
-
-    def deinit(self) -> None:
-        """
-        Deinitializes the database and optionally clears the storage.
-        """
-
-        logger.debug("Deinitializing database")
-        self.clear()
-        self.storage.delete()
-        self.storage = None
-        logger.debug("Cleared in-memory address book data.")
+    def delete(self) -> None:
+        """Deletes the database storage file and its parent directory if it is empty."""
+        self._storage.delete()

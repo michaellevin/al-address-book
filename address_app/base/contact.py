@@ -102,3 +102,11 @@ class Contact:
             str: A string representation of the contact.
         """
         return f"Contact(name={self.name}, address={self.address}, phone_no={self.phone_no})"
+
+    def __str__(self) -> str:
+        """Provides a string representation of the contact.
+
+        Returns:
+            str: A string representation of the contact.
+        """
+        return f"{self.name} - {self.address} - {self.phone_no}"

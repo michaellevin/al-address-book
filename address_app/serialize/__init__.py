@@ -1,2 +1,1 @@
 from .serialization_registry import SerializeStrategyRegistry, get_supported_formats
-from .base_serialization import ISerializeStrategy

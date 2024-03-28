@@ -1,22 +1,40 @@
 address\_app.view package
 =========================
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   address_app.view.strategies
-
 Submodules
 ----------
 
-.. toctree::
-   :maxdepth: 4
+address\_app.view.base\_view module
+-----------------------------------
 
-   address_app.view.formatter_registry
-   address_app.view.view_manager
+.. automodule:: address_app.view.base_view
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+address\_app.view.html\_view module
+-----------------------------------
+
+.. automodule:: address_app.view.html_view
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+address\_app.view.md\_view module
+---------------------------------
+
+.. automodule:: address_app.view.md_view
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+address\_app.view.view\_registry module
+---------------------------------------
+
+.. automodule:: address_app.view.view_registry
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------
@@ -25,4 +43,3 @@ Module contents
    :members:
    :undoc-members:
    :show-inheritance:
-   :private-members:
