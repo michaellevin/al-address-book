@@ -19,7 +19,7 @@ class SerializeStrategyRegistry:
 
     @classmethod
     def get_supported_formats(cls) -> List[str]:
-        return cls._strategies.keys()
+        return list(cls._strategies.keys())
 
     @classmethod
     def get_strategy_for_extension(cls, format: str = "json"):

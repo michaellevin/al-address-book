@@ -80,7 +80,7 @@ def filter_contacts(book_name, search_str):
             print(f"Filtering contacts in book: {book_name} with phone_no: {value}")
 
         try:
-            print(field, value)
+            # print(field, value)
             contacts = adb.db_manager.find_contacts(book_name, **{field: value})
             print(contacts)
         except Exception as e:
