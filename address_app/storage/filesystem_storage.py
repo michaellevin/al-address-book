@@ -32,7 +32,7 @@ class DbFileSystemStorage(IStorage):
 
     def write(self, data: DbSchema):
         with self._lock:
-            data_serialized = self._strategy.serialize(data)
+            data_serialized = self._strategy.serialize(data=data)
             with open(self._storage_filepath, "w") as file:
                 file.write(data_serialized)
 
@@ -42,7 +42,7 @@ class DbFileSystemStorage(IStorage):
             return DbSchema()
 
         with open(self._storage_filepath, "r") as file:
-            return self._strategy.deserialize(file.read())
+            return self._strategy.deserialize(data=file.read())
 
     def delete(self):
         """Delete the storage file and its parent directory if it is empty"""
@@ -50,7 +50,7 @@ class DbFileSystemStorage(IStorage):
             self._storage_filepath.unlink()
 
             rmtree(self._storage_filepath.parent)
-            self._storage_filepath.parent.rmdir()
+            # self._storage_filepath.parent.rmdir()
 
         except FileNotFoundError:
             get_logger().error(f"File {self._storage_filepath} not found for deletion")

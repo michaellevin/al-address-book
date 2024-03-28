@@ -17,8 +17,8 @@ class YAMLStrategy(ISerializeStrategy):
         return yaml.dump(schema_dict)
 
     @classmethod
-    def deserialize(cls, schema_yaml: str) -> DbSchema:
+    def deserialize(cls, data: str) -> DbSchema:
         """Deserialize the YAML string back to a DbSchema object."""
         # Convert the YAML string to a dictionary and then to a DbSchema object
-        schema_dict = yaml.safe_load(schema_yaml)
+        schema_dict = yaml.safe_load(data)
         return DbSchema(**schema_dict)

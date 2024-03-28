@@ -39,8 +39,8 @@ class DbSchema:
 
     """
 
-    contacts: DbContactsTypeAlias = field(default_factory=list)
-    books: DbBooksTypeAlias = field(default_factory=list)
+    contacts: DbContactsTypeAlias = field(default_factory=dict)
+    books: DbBooksTypeAlias = field(default_factory=dict)
 
     def __eq__(self, __value: object) -> bool:
         if not isinstance(__value, DbSchema):

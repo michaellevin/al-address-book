@@ -19,7 +19,7 @@ class JSONStrategy(ISerializeStrategy):
         return json.dumps(schema_dict)
 
     @classmethod
-    def deserialize(cls, schema_json: str) -> DbSchema:
+    def deserialize(cls, data: str) -> DbSchema:
         # Convert the JSON string back to a dictionary and then to a DbSchema object
-        schema_dict = json.loads(schema_json)
+        schema_dict = json.loads(data)
         return DbSchema(**schema_dict)

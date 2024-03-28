@@ -15,7 +15,7 @@ class TestFileSystemStorage(unittest.TestCase):
         This test verifies that the FileSystemStorage class can successfully write and read data to and from the filesystem.
         """
         root = "tests"
-        strategy = SerializeStrategyRegistry.get_strategy_for_extension("json")
+        strategy = SerializeStrategyRegistry.get_strategy_for_extension("xml")
         self.file_storage = address_app.storage.DbFileSystemStorage(strategy, root)
         self.file_storage.init()
         self.assertTrue(
