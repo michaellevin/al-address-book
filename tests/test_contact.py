@@ -1,5 +1,61 @@
 import unittest
-from address_app.model import Contact
+from address_app.base.contact import Contact
+from address_app.base.validator import ContactValidation
+from address_app.base.exceptions import InvalidContactDataException
+
+
+class TestValidation(unittest.TestCase):
+
+    def test_valid_name(self):
+        self.assertIsNone(
+            ContactValidation.validate_name("John Doe")
+        )  # Assuming validate_name returns None for valid inputs
+
+        # Test invalid names
+        with self.assertRaises(InvalidContactDataException):
+            ContactValidation.validate_name("")  # Empty string
+
+        with self.assertRaises(InvalidContactDataException):
+            ContactValidation.validate_name("   ")  # Spaces only
+
+        with self.assertRaises(InvalidContactDataException):
+            ContactValidation.validate_name("123")  # Numeric string
+
+    def test_valid_address(self):
+        self.assertIsNone(ContactValidation.validate_address("123 Main St"))
+
+        # Test invalid addresses
+        with self.assertRaises(InvalidContactDataException):
+            ContactValidation.validate_address("")  # Empty string
+
+        with self.assertRaises(InvalidContactDataException):
+            ContactValidation.validate_address("   ")  # Spaces only
+
+    def test_valid_phone_no(self):
+        self.assertIsNone(
+            ContactValidation.validate_phone_no("555-1234"),
+            "Phone number should be valid",
+        )
+        self.assertIsNone(
+            ContactValidation.validate_phone_no("+1 (903) 972-35-59"),
+            "Phone number should be valid",
+        )
+        self.assertIsNone(
+            ContactValidation.validate_phone_no(None),
+            "Phone number should be valid or empty",
+        )
+        self.assertIsNone(
+            ContactValidation.validate_phone_no(""),
+            "Phone number should be valid or empty",
+        )
+        self.assertIsNone(
+            ContactValidation.validate_phone_no(" "),
+            "Phone number should be valid or empty",
+        )
+
+        # Test invalid phone numbers
+        with self.assertRaises(InvalidContactDataException):
+            ContactValidation.validate_phone_no("abc")  # Non-numeric
 
 
 class TestContact(unittest.TestCase):
@@ -69,6 +125,32 @@ class TestContact(unittest.TestCase):
         self.assertIsNotNone(
             self.contact2.phone_no,
             "Contact phone number should be None if not provided",
+        )
+
+    def test_contact_as_dict(self):
+        """
+        Test the conversion of a Contact instance to a dictionary.
+
+        Ensures that a Contact instance can be correctly represented as a dictionary, excluding
+        the unique identifier attribute. The dictionary should contain the contact's name, address,
+        and phone number (if available).
+
+        """
+        contact_dict = self.contact1.as_dict()
+        self.assertIsInstance(
+            contact_dict,
+            dict,
+            "Contact representation should be a dictionary",
+        )
+
+        self.assertDictEqual(
+            contact_dict,
+            {
+                "name": "John Doe",
+                "address": "123 Main St",
+                "phone_no": "555-1234",
+            },
+            "Contact details should be included in the dictionary",
         )
 
 

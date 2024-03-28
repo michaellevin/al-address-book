@@ -3,7 +3,7 @@ import os
 from address_app.database import AdbDatabase
 from address_app.base.consts import DEFAULT_STORAGE_FULL_PATH
 from address_app.base.job_status import Status
-from address_app.model.address_book import (
+from address_app.base.book import (
     validate_name,
     validate_address,
     validate_phone_no,

@@ -1,1 +1,1 @@
-from .filesystem_storage import FileSystemStorage
+from .filesystem_storage import DbFileSystemStorage, IStorage

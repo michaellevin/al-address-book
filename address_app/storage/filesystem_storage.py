@@ -1,51 +1,62 @@
-import pickle
-import tempfile
-from typing import Optional, Dict
+from typing import Optional
 from pathlib import Path
 from threading import Lock
+from shutil import rmtree
 
-from .storage_interface import IStorage
+from .base_storage import IStorage
+from ..base import get_logger
 from ..base.consts import DEFAULT_ROOT_PATH, RELATIVE_STORAGE_PATH
+from ..database.db_schema import DbSchema
+from ..serialize import ISerializeStrategy
 
 
-class FileSystemStorage(IStorage):
-    def __init__(self, root: Optional[Path] = None):
+class DbFileSystemStorage(IStorage):
+    def __init__(self, strategy: ISerializeStrategy, root: Optional[Path] = None):
+        self._strategy = strategy
         if root is None:
             root = DEFAULT_ROOT_PATH
-        self.root = Path(root)
-        self.storage_filepath = self.root / RELATIVE_STORAGE_PATH
-        self.storage_filepath.parent.mkdir(parents=True, exist_ok=True)
+        self._root = Path(root)
+        self._storage_filepath = (
+            self._root / f"{RELATIVE_STORAGE_PATH}.{self._strategy.format()}"
+        )
 
         self._lock = Lock()
 
-    def save(self, data: dict):
+    def init(self):
+        self._storage_filepath.parent.mkdir(parents=True, exist_ok=True)
+        if not self._storage_filepath.exists():
+            self.write(DbSchema())
+
+    def is_initialized(self) -> bool:
+        return self._storage_filepath.exists()
+
+    def write(self, data: DbSchema):
         with self._lock:
-            self._save(data)
+            data_serialized = self._strategy.serialize(data)
+            with open(self._storage_filepath, "w") as file:
+                file.write(data_serialized)
 
-    def _save(self, data: dict):
-        with open(self.storage_filepath, "wb") as file:
-            pickle.dump(data, file)
+    def read(self) -> DbSchema:
+        if not self._storage_filepath.exists():
+            get_logger().error(f"File {self._storage_filepath} not found for reading")
+            return DbSchema()
 
-    def read(self) -> Dict:
-        if not self.storage_filepath.exists():
-            self.save({})
-            return {}
-        with open(self.storage_filepath, "rb") as file:
-            return pickle.load(file)
+        with open(self._storage_filepath, "r") as file:
+            return self._strategy.deserialize(file.read())
 
     def delete(self):
+        """Delete the storage file and its parent directory if it is empty"""
         try:
-            self.storage_filepath.unlink()
-            self.storage_filepath.parent.rmdir()
-            # if not any(self.root.iterdir()):
-            #     self.root.rmdir()
+            self._storage_filepath.unlink()
+
+            rmtree(self._storage_filepath.parent)
+            self._storage_filepath.parent.rmdir()
 
         except FileNotFoundError:
-            print(f"File {self.storage_filepath} not found for deletion")
-            # raise
+            get_logger().error(f"File {self._storage_filepath} not found for deletion")
 
-    def get_root_as_str(self) -> str:
-        return str(self.root.resolve())
+    def root_as_str(self) -> str:
+        return str(self._root.resolve())
 
-    def get_filepath_as_str(self) -> str:
-        return str(self.storage_filepath.resolve())
+    def filepath_as_str(self) -> str:
+        return str(self._storage_filepath.resolve())

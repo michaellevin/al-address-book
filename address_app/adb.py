@@ -4,7 +4,7 @@ from pathlib import Path
 from .base import get_logger
 from .base.job_status import JobStatus, Status
 from .model import AddressBook
-from .storage import FileSystemStorage
+from .storage import DbFileSystemStorage
 
 logger = get_logger()
 
@@ -82,7 +82,7 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
             root (Path): The root path for the database storage.
         """
         logger.debug("Initializing database")
-        self.storage = FileSystemStorage(root)
+        self.storage = DbFileSystemStorage(root)
         self._read()
 
     @property
@@ -93,7 +93,7 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
         Returns:
             str: The root path for the database storage.
         """
-        return self.storage.get_root_as_str()
+        return self.storage.root_as_str()
 
     @property
     def storage_filepath(self) -> str:
@@ -104,7 +104,7 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
         Returns:
             str: The file path for the database storage.
         """
-        return self.storage.get_filepath_as_str()
+        return self.storage.filepath_as_str()
 
     def create_address_book(self, name: str) -> JobStatus:
         """
@@ -256,7 +256,7 @@ class AdbDatabase(metaclass=_SingletonRootMeta):
         Returns:
             bool: True if the save operation was successful, False otherwise.
         """
-        self.storage.save(self._address_books)
+        self.storage.write(self._address_books)
         return True
 
     def _read(self) -> bool:
