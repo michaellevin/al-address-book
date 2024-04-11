@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass, field, fields
 from typing import Dict, List, Optional
 from .aux_utils import hash_input
-from ..database.db_schema import DbContactsTypeAlias
+from ..database.db_schema import ContactDictTypeAlias
 
 
 @dataclass
@@ -62,20 +62,17 @@ class Contact:
         """
         return self._id
 
-    def as_dict(self) -> DbContactsTypeAlias:
+    def as_dict(self) -> ContactDictTypeAlias:
         """Converts the contact details to a dictionary format, excluding the unique identifier.
 
         Example:
             >>> contact = Contact("John Doe", "123 Main St", "555-1234")
             >>> contact.as_dict()
                 {
-                    3914141904: {
-                        'name': 'John Doe',
-                        'address': '123 Main St',
-                        'phone_no': '555-1234'
-                        }
+                    'name': 'John Doe',
+                    'address': '123 Main St',
+                    'phone_no': '555-1234'
                 }
-
 
         Returns:
             dict: A dictionary of the contact's details.
