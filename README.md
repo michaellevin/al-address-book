@@ -1,5 +1,5 @@
 # al-address-book
-**[AnimalLogic technical task]** A small library which collects, filters, and saves users' personal data. 
+A small library which collects, filters, and saves users' personal data. 
 
 
 ## Module usage example
